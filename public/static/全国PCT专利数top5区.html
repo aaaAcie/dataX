@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+	<head> 
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+				@font-face {
+					font-family: 'SourceHanSansCN';
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<script>
+				let BeginSize = [400, 237];
+				let myChart = null;
+				let myColor = ["#E1A938","#823BFF","#04CDF4","#0088FF","#009258"];
+				// alert(1);
+				// let dataList= ; //鄞州区
+				// let dataList1= ; //海曙区
+				// let dataList2= ; //江北区
+				// let dataList3= ; //镇海区
+				// let dataList4= ; //北仑区
+				let datalist=[[120, 1132, 101, 134],[220, 182, 191, 234],[150, 232, 201, 154],[320, 332, 301, 334],[820, 932, 1101, 934]]
+				let titleData= ['2018', '2019', '2020', '2021'];
+				let titleData1=['鄞州区', '海曙区', '江北区', '镇海区', '北仑区'];
+				// let changeData=[];
+				
+				// let datalist=[];
+				// let titleData= [];
+				// let titleData1=[];
+				
+				
+				function fresh() {
+					let changeData=[];
+					if (myChart == null) {
+						myChart = echarts.init(document.getElementById('main')); //利用原型调取Echarts的初始化方法
+					}
+					titleData1.forEach((item,index)=>{
+						changeData.push({
+							name:item,
+							type: 'line',
+							symbol: 'none',
+							data: datalist[index]
+						})
+					})
+					let option = {
+						// backgroundColor: "#031026",
+						tooltip: {
+							trigger: 'axis',
+							backgroundColor: "#031026",
+							borderColor: "#031026",
+							
+							axisPointer: {
+							    type: 'line',
+								lineStyle: {
+								        type: "dashed"
+								      },
+							},
+							formatter: function(params){
+								var str=`<h2 style=font-size:14px;>${params[0].name}年</h2>
+								<span style=font-size:14px>${params[0].seriesName.replace('市','').replace('区','')}</span><span style="display:inline-block;color:#E4C23A;font-size:14px;padding-left:20px;width:35px">${params[0] ? params[0].data : ''}</span>
+								<span style=font-size:14px>${params[1].seriesName.replace('市','').replace('区','')}</span><span style="display:inline-block;color:#823BFF;font-size:14px;padding-left:20px;width:35px">${params[1] ? params[1].data : ''}</span><br />
+								<span style=font-size:14px>${params[2].seriesName.replace('市','').replace('区','')}</span><span style="display:inline-block;color:#04CDF4;font-size:14px;padding-left:20px;width:35px">${params[2] ? params[2].data : ''}</span>
+								<span style=font-size:14px>${params[3].seriesName.replace('市','').replace('区','')}</span><span style="display:inline-block;color:#0088FF;font-size:14px;padding-left:20px;width:35px">${params[3] ? params[3].data : ''}</span><br />
+								<span style=font-size:14px>${params[4].seriesName.replace('市','').replace('区','')}</span><span style="display:inline-block;color:#009258;font-size:14px;padding-left:20px;width:35px">${params[4] ? params[4].data : ''}</span>`
+								return str
+								
+							},
+						},
+						title:{
+							text:`单位：个`,
+							textStyle: {
+								fontSize: 15,
+								color: "#99c8ff",
+								fontFamily: 'SourceHanSansCN'
+							},
+							right: "3%",
+							top: "0%",
+						},
+						color: myColor,
+						legend: {
+							bottom:'2%',
+							icon: "circle",
+							itemWidth: 9,
+							itemHeight: 9,
+							itemGap: 21,
+							textStyle: {
+							 color: "#DFF8FF",
+							 fontSize: 15,
+							},
+							data: titleData1
+						},
+						grid: {
+							left: '4%',
+							// width:'91%',
+							height:'68%',
+							bottom: '18%',
+							containLabel: true
+						},
+						xAxis: {
+							type: 'category',
+							boundaryGap: false,
+							data: titleData,
+							axisLine: {
+								show: true,
+								lineStyle: {
+									color: "#B1B1B1",
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									color: "#DFF8FF",
+									fontSize: 17
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: false,
+							},
+						},
+						yAxis: {
+							type: 'value',
+							axisLine: {
+								lineStyle: {
+									color: "#B1B1B1",
+
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									color: "#B1B1B1",
+									fontSize: 15
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: true,
+								lineStyle: {
+									color: "#556468",
+									type: "dashed"
+								},
+							},
+						},
+						series: changeData
+					};
+					myChart.setOption(option);
+				}
+				fresh();
+				
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					var obj = JSON.parse(data);
+					titleData = obj.data1;
+					titleData1 = obj.data2;
+					datalist = obj.data3;
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

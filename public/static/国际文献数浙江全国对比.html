@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+
+				@font-face {
+					font-family: DIN;
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<script>
+				let BeginSize = [400, 237];
+				let myChart = null;
+				let myColor = ["#E4C23A", "#387EE1"];
+				let dataList1 = [10, 20, 20]; //浙江
+				let dataList2 = [30, 60, 70]; //全国
+				
+
+				function fresh() {
+					let datacesi = [10, 10, 10]
+					let option = {
+						backgroundColor: "rgba(3, 16, 38, 1)",
+						title:{
+							text:`单位：篇`,
+							textStyle: {
+								fontSize: 15,
+								color: "#99c8ff",
+								fontFamily: 'SourceHanSansCN'
+							},
+							left: "1%",
+							top: "13%",
+						},
+						legend: {
+							itemHeight: 14,
+							itemWidth: 14,
+							icon: "rect",
+							right: "20",
+							top: "13%",
+							textStyle: {
+								padding: [0,10,-2,0],
+								// width: 40,
+								color: "#fff",
+								fontSize: 15,
+								fontFamily: 'SourceHanSansCN'
+							},
+						},
+						tooltip: {
+							trigger: 'axis',
+							backgroundColor: "#031026",
+							borderColor: "#031026",
+							axisPointer: {
+								type: 'none',
+							},
+							formatter: function(params) {
+								console.log(params);
+								var str =
+								`<h2 style=font-size:14px;>${params[0].name}年</h2>
+								<span style=font-size:14px>${params[1].seriesName}国际文献</span><span style=color:#E4C23A;font-size:14px;padding-left:20px;>${params[1] ? params[1].data : ''}篇</span><br />
+								<span style=font-size:14px>${params[2].seriesName}国际文献</span><span style=color:#4492FF;font-size:14px;padding-left:20px;>${params[2] ? params[2].data : ''}篇</span>`
+								return str
+
+							},
+						},
+						color: myColor,
+						grid: {
+							left: '20%',
+							width: '70%',
+							bottom: 20
+							// height: '60%'
+						},
+						xAxis: {
+							show: false,
+						},
+						yAxis: {
+							data: ["2018", "2019", "2020"],
+							inverse: true,
+							axisLine: {
+								show: false,
+
+								lineStyle: {
+									color: "#C1E2FF",
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									padding: [0,25,0,0],
+									color: "#DFF8FF",
+									fontSize: 17
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: false,
+							},
+						},
+						series: [
+								{
+									name: "浙江",
+									type: "bar",
+									stack: "all",
+									barWidth: 12,
+									data: dataList1,
+								},
+								{
+									name: "全国",
+									type: "bar",
+									stack: "all",
+									barWidth: 12,
+									data: dataList2,
+								}
+							],
+						};
+						myChart.setOption(option);
+					}
+					bind();
+					fresh();
+
+
+					//浏览器测试用
+					change(BeginSize[0], BeginSize[1]);
+					//fresh();
+					function bind() {
+						myChart = echarts.init(document.getElementById('main'));
+					}
+
+
+					function change(x, y) {
+						let div = document.getElementById("main");
+						//alert("I am an alert box!!");
+						div.style.width = x + "px";
+						div.style.height = y + "px";
+						var myOption = myChart.getOption();
+						myChart.resize();
+						let types = []
+						myOption.series.forEach((item) => {
+							types.push(item.type)
+						})
+						return types
+					}
+
+					ue.interface.TransList = function(data) {
+						var obj = JSON.parse(data);
+						dataList1 = obj.data1; //zj
+						dataList2 = obj.data2; //cn
+						fresh();
+					};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

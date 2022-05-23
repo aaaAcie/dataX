@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>间隔柱状</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./dist/echarts-gl.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script> 
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main" ></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		
+		-->
+			<script>
+				let BeginSize = [418.48, 267.06];
+				let barWidth = 20
+				let myData=['E轮', 'D轮', 'C轮', 'B轮', 'A轮', '天使轮']
+				let dataCh=[3, 13, 25, 74, 159, 92]
+				let dataJp=[3.534, 52.318, 113.277, 1886.024, 531.057, 34]
+
+				function fresh() {
+					let dataList = [];
+					for (var i=0;i<myData.length;i++) {
+						dataList.push({
+								value: myData[i],
+								textStyle:{
+									fontSize:15,
+									fontWeight:600,
+									color:'#DFF8FF',
+									align: "center",
+									lineOverflow:'none',
+								},
+							});
+					}
+					let option = {
+					backgroundColor: '#040e22',
+					tooltip: {
+						show: false,
+					},
+					legend: {
+						show: true,
+						top:'11%',
+						left:'20%',
+						itemHeight: 10,
+						itemWidth: 10,
+						itemGap:25,
+						// symbolRotate: 'inherit',
+						textStyle:{
+							color:'#DFF8FF',
+							fontSize:15,
+						},
+					},
+					title:{
+						show:false
+						// x: '60%',
+						// y: 0,
+						// subtext: '统计时间：'+ctime,
+						// subtextStyle:{
+						// 	fontSize: 15,
+						// 	color:'#B7B7B7',
+						// }
+					},
+					grid: [
+					{
+						left: '2%',
+						top: '23%',
+						bottom: '8%',
+						containLabel: true, // grid 区域是否包含坐标轴的刻度标签。
+						width: '15%', // grid 组件的宽度。默认自适应。
+					}, 
+					{
+						show: false, 
+						left: '22%',
+						top: '23%',
+						bottom: '8%',
+						width: '30%',
+					},
+					 {
+						show: false, // 右侧
+						left: '53%',
+						top: '23%',
+						bottom: '8%',
+						containLabel: true, // grid 区域是否包含坐标轴的刻度标签。
+						width: '30%', // grid 组件的宽度。默认自适应。
+					}, 
+					],
+					// X轴线配置
+					xAxis: [
+					{ // 区域
+						gridIndex: 0,
+						show: false, // 不显示X轴
+					},
+					{ // 区域
+						gridIndex: 1, // x 轴所在的 grid 的索引，默认位于第一个 grid。[ default: 0 ]
+						type: 'value', // 轴线类型: 数值轴
+						position: 'top', // 轴线位置(此处位于顶部)
+						inverse: true, // 是否是反向坐标轴.[ default: false ]
+						axisLine: {
+							show: false, // 轴线不显示
+						},
+						axisTick: {
+							show: false, // 轴线刻度不显示
+						},
+						axisLabel: { // 轴线刻度标签
+							show: false,
+						},
+						splitLine: { // 垂直于X轴的分隔线
+							show: false,
+						},
+					},
+					{ // 区域
+						gridIndex: 2,
+						type: 'value',
+						position: 'top',
+						inverse: false, // 是否是反向坐标轴.[ default: false ]
+						axisLine: {
+							show: false, // 轴线不显示
+						},
+						axisTick: {
+							show: false, // 轴线刻度不显示
+						},
+						axisLabel: { // 轴线刻度标签
+							show: false,
+						},
+						splitLine: { // 垂直于X轴的分隔线
+							show: false,
+						},
+					}, 
+					],
+					// Y轴线配置
+					yAxis: [
+					{
+						gridIndex: 0, // 中间区域
+						type: 'category',
+						boundaryGap: true,
+						inverse: true,
+						position: 'left', // y轴的位置。'left' or 'right'
+						axisLine: {
+							show: false
+						},
+						axisTick: {
+							show: false
+						},
+						data: dataList,
+						
+					},{ // 左侧区域
+						gridIndex: 1, // y 轴所在的 grid 的索引，默认位于第一个 grid。[ default: 0 ]
+						type: 'category', // 轴线类型: 类目轴
+						// 类目轴中 boundaryGap 可以配置为 true 和 false。默认为 true，这时候刻度只是作为分隔线，标签和数据点都会在两个刻度之间的带(band)中间。
+						boundaryGap: true, // 坐标轴两边留白策略，类目轴和非类目轴的设置和表现不一样。
+						inverse: true, // 是否是反向坐标轴.[ default: false ]
+						// position: 'left', // y轴的位置。'left' or 'right'
+						axisLine: {
+							show: false,
+							// show: true, // y轴线不显示
+							// lineStyle:{
+							// 	type:'dotted',
+							// 	color:'#556468',
+							// 	width:1
+							// }
+						},
+						axisTick: {
+							show: false
+						},
+						axisLabel: {
+							show: false, // 刻度标签不显示
+						},
+						data: myData // Y轴(这里是类目轴)的类目数据
+					},
+					{ // 右侧区域
+						gridIndex: 2,
+						type: 'category',
+						boundaryGap: true,
+						inverse: true,
+						position: 'left',
+						axisLine: {
+							show: false
+						},
+						axisTick: {
+							show: false,
+						},
+						axisLabel: {
+							show: false,
+						},
+						data: myData
+					},
+					],
+					series: [{
+						name: '融资事件数量(起)', // 系列名称
+						nameTextStyle: {
+						    color: "#DFF8FF",
+							fontSize:14
+						},
+						type: 'bar',
+						barGap: 19, // 柱间距离
+						barWidth: 16, 
+						xAxisIndex: 1, // 对应在X轴的grid索引
+						yAxisIndex: 1, // 对应在Y轴的grid索引
+						label: {
+							show: true,
+							position: 'left',
+							textStyle: { // 柱子上数字样式
+								color: '#81E3D3',
+								fontSize: 15,
+							},
+						},
+						itemStyle: { // 柱条样式。
+							color:new echarts.graphic.LinearGradient(0, 0, 1, 0,
+							  [{
+								offset: 0, color: 'rgba(14, 52, 74, 0.18)' // 0% 处的颜色
+							  }, {
+								offset: 1, color: 'rgba(27, 103, 148, 0.67)' // 100% 处的颜色
+							  }]),
+						},
+						data: dataCh, // 系列中的数据内容数组
+					},
+					{
+						name: '披露融资金额(亿元)', // 系列名称
+						nameTextStyle: {
+						    color: "#DFF8FF",
+							fontSize:14
+						},
+						type: 'bar',
+						barGap: 19, // 柱间距离
+						barWidth: 16, // 女士柱子宽度
+						xAxisIndex:2, // 对应在X轴的grid索引
+						yAxisIndex: 2, // 对应在Y轴的grid索引
+						label: {
+							show: true,
+							position: 'right',
+							textStyle: { // 柱子上数字样式
+								color: '#e9f7f2',
+								fontSize: 15,
+							},
+							formatter: function(params){
+								return `${params.value.toFixed(1)}`
+							}
+						},
+						itemStyle: { // 柱条样式。
+							color:new echarts.graphic.LinearGradient(0, 0, 1, 0,
+							  [{
+								offset: 0, color: '#0535BA' // 0% 处的颜色
+							  }, {
+								offset: 1, color: '#00F6FF' // 100% 处的颜色
+							  }]),
+						},
+						data: dataJp, // 系列中的数据内容数组
+					}
+					]
+				}
+
+					myChart = echarts.init(document.getElementById('main'));
+					myChart.setOption(option);
+				}
+
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+				changeBorder('red', false, 'topl', 10);
+				//fresh();
+
+				function LinkUE4() {
+					//alert("I am an alert box!!");
+					//ue4("getData2",{mes:"get all data"});
+					ue4("CallBack", {}, function(v) {
+						alert("I am an alert box!!");
+					});
+				};
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+				function changeBorder(x, y, p, n) {
+					let div = document.getElementById("main");
+					div.style.border = `0px solid ${x}`;
+					if (y) {
+						div.style.borderRadius = '10px'
+					} else {
+						if (p = 'topl') {
+							div.style.borderTopLeftRadius = n + 'px';
+						} else if (p = 'topr') {
+							div.style.borderTopRightRadius = n + 'px';
+						} else if (p = 'bottoml') {
+							div.style.borderBottomLeftRadius = n + 'px';
+						} else if (p = 'bottomr') {
+							div.style.borderBottomRightRadius = n + 'px';
+						}
+					}
+					myChart.resize();
+				}
+
+				ue.interface.ChangeSize = function(data) {
+					//alert("I am an alert box!!");
+					change(data[0], data[1]);
+
+
+				};
+
+				ue.interface.TransColor = function(data) {
+					myColor = data;
+				};
+
+				ue.interface.TransColorFresh = function(data) {
+					myColor = data;
+					fresh();
+				};
+
+				ue.interface.TransData = function(data) {
+					//alert(data);
+					var obj = JSON.parse(data);
+					itemTitle = obj.data1;
+					itemData1 = obj.data2;
+					itemData2 = obj.data3;
+					fresh();
+				};
+				//刷新数据但不刷新动画，只是曲线变化
+				ue.interface.Ani = function(data) {
+					var myOption = myChart.getOption();
+					myChart.setOption(myOption);
+				};
+
+				//刷新动画且更新数据
+				ue.interface.ReAni = function(data) {
+					var myOption = myChart.getOption();
+					myChart.clear();
+					myChart.setOption(myOption);
+				};
+
+				/************下面数据***********/
+				ue.interface.TransData1 = function(data) {
+					dataTemp1 = data;
+					fresh();
+				};
+
+				ue.interface.TransData1 = function(data) {
+					dataTemp2 = data;
+					fresh();
+				};
+
+				ue.interface.titleData1 = function(data) {
+					titleshow = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titletext = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titleleft = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titletop = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titlebottom = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titleright = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titlefsize = data;
+					fresh();
+				};
+				ue.interface.titleData1 = function(data) {
+					titlecolor = data;
+					fresh();
+				};
+
+				ue.interface.legendData1 = function(data) {
+					legendshow = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendname = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendleft = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendtop = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendbottom = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendright = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendiWidth = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendiHeight = data;
+					fresh();
+				};
+				ue.interface.legendData1 = function(data) {
+					legendcolor = data;
+					fresh();
+				};
+
+				ue.interface.splitLineData1 = function(data) {
+					xsplitLine = data;
+					fresh();
+				};
+				ue.interface.splitLineData1 = function(data) {
+					ysplitLine = data;
+					fresh();
+				};
+
+				ue.interface.axisLineData1 = function(data) {
+					xaxisLineshow = data;
+					fresh();
+				};
+				ue.interface.axisLineData1 = function(data) {
+					yaxisLineshow = data;
+					fresh();
+				};
+
+				ue.interface.axisLabelData1 = function(data) {
+					xaxisLabelshow = data;
+					fresh();
+				};
+				ue.interface.axisLabelData1 = function(data) {
+					xaxisLabelfsize = data;
+					fresh();
+				};
+				ue.interface.axisLabelData1 = function(data) {
+					xaxisLabelcolor = data;
+					fresh();
+				};
+				ue.interface.axisLabelData1 = function(data) {
+					yaxisLabelshow = data;
+					fresh();
+				};
+				ue.interface.axisLabelData1 = function(data) {
+					yaxisLabelfsize = data;
+					fresh();
+				};
+				ue.interface.axisLabelData1 = function(data) {
+					yaxisLabelcolor = data;
+					fresh();
+				};
+				ue.interface.barWidthData1 = function(data) {
+					barWidth = data;
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

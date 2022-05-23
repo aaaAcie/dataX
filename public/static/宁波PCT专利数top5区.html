@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>  
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+
+				@font-face {
+					font-family: DIN;
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main" style=""></div>
+			<script>
+				let BeginSize = [400, 237];
+				let myChart = null;
+				let myColor = ["#E1A938","#823BFF","#04CDF4","#0088FF","#009258"];
+				let dataList= [120, 132, 101, 134, 90, 230, 210]; //鄞州区
+				let dataList1= [220, 182, 191, 234, 290, 330, 310]; //海曙区
+				let dataList2= [150, 232, 201, 154, 190, 330, 410]; //江北区
+				let dataList3= [320, 332, 301, 334, 390, 330, 320]; //镇海区
+				let dataList4= [820, 932, 901, 934, 1290, 1330, 1320]; //北仑区
+				let titleData= ['2018', '2019', '2020', '2021'];
+				let titleData1=['鄞州区', '海曙区', '江北区', '镇海区', '北仑区'];
+				
+				function fresh() {
+					let option = {
+						backgroundColor: "#031026",
+						title: {
+						    text: "单位：个",
+						    right: "3%",
+						    top: "0%",
+						    textStyle: {
+						      fontSize: 15,
+						      color: "#99c8ff",
+						      fontFamily: 'SourceHanSansCN'
+						    },
+						  },
+						tooltip: {
+							trigger: 'axis',
+							backgroundColor: "#031026",
+							borderColor: "#031026",
+							
+							axisPointer: {
+							    type: 'line',
+								lineStyle: {
+								        type: "dashed"
+								      },
+							},
+							formatter: function(params){
+								var str=`<h2 style=font-size:14px;>${params[0].name}年</h2>
+								<span style=font-size:14px>${params[0].seriesName.replace('区','')}</span><span style=color:#E4C23A;font-size:14px;padding-left:20px;>${params[0] ? params[0].data : ''}</span>
+								<span style=font-size:14px>${params[1].seriesName.replace('区','')}</span><span style=color:#823BFF;font-size:14px;padding-left:20px;>${params[1] ? params[1].data : ''}</span><br />
+								<span style=font-size:14px>${params[2].seriesName.replace('区','')}</span><span style=color:#04CDF4;font-size:14px;padding-left:20px;>${params[2] ? params[2].data : ''}</span>
+								<span style=font-size:14px>${params[3].seriesName.replace('区','')}</span><span style=color:#0088FF;font-size:14px;padding-left:20px;>${params[3] ? params[3].data : ''}</span><br />
+								<span style=font-size:14px>${params[4].seriesName.replace('区','')}</span><span style=color:#009258;font-size:14px;padding-left:20px;>${params[4] ? params[4].data : ''}</span>`
+								
+								return str
+								
+							},
+						},
+						color: myColor,
+						legend: {
+							bottom:'2%',
+							icon: "circle",
+							itemHeight: 10,
+							itemWidth: 10,
+							textStyle: {
+							 color: "#DFF8FF ",
+							 fontSize: 15,
+							},
+							data: titleData1
+						},
+						grid: {
+							left: '3%',
+							right: '4%',
+							height:'75%',
+							width:'90%',
+							bottom: '15%',
+							containLabel: true
+						},
+						xAxis: {
+							type: 'category',
+							boundaryGap: false,
+							data: titleData,
+							axisLine: {
+								show: true,
+								lineStyle: {
+									color: "#B1B1B1",
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									color: "#DFF8FF",
+									fontSize: 17
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: false,
+							},
+						},
+						yAxis: {
+							type: 'value',
+							axisLine: {
+								lineStyle: {
+									color: "#B1B1B1",
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									color: "#B1B1B1",
+									fontSize: 15
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: true,
+								lineStyle: {
+									color: "#556468",
+									type: "dashed"
+								},
+							},
+						},
+						series: [{
+								name: '鄞州区',
+								type: 'line',
+								symbol: 'none',
+								data: [120, 132, 101, 134, 90, 230, 210]
+							},
+							{
+								name: '海曙区',
+								type: 'line',
+								symbol: 'none',
+								data: [220, 182, 191, 234, 290, 330, 310]
+							},
+							{
+								name: '江北区',
+								type: 'line',
+								symbol: 'none',
+								data: [150, 232, 201, 154, 190, 330, 410]
+							},
+							{
+								name: '镇海区',
+								type: 'line',
+								symbol: 'none',
+								data: [320, 332, 301, 334, 390, 330, 320]
+							},
+							{
+								name: '北仑区',
+								type: 'line',
+								symbol: 'none',
+								data: [820, 932, 901, 934, 1290, 1330, 1320]
+							}
+						]
+					};
+					myChart.setOption(option);
+				}
+				bind();
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+				changeBorder('red', false, 'topl', 10);
+				//fresh();
+				function bind() {
+					myChart = echarts.init(document.getElementById('main'));
+				}
+
+				function LinkUE4() {
+					//alert("I am an alert box!!");
+					//ue4("getData2",{mes:"get all data"});
+					ue4("CallBack", {}, function(v) {
+						alert("I am an alert box!!");
+					});
+				};
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+				function changeBorder(x, y, p, n) {
+					let div = document.getElementById("main");
+					div.style.border = `0px solid ${x}`;
+					if (y) {
+						div.style.borderRadius = '10px'
+					} else {
+						if (p = 'topl') {
+							div.style.borderTopLeftRadius = n + 'px';
+						} else if (p = 'topr') {
+							div.style.borderTopRightRadius = n + 'px';
+						} else if (p = 'bottoml') {
+							div.style.borderBottomLeftRadius = n + 'px';
+						} else if (p = 'bottomr') {
+							div.style.borderBottomRightRadius = n + 'px';
+						}
+					}
+					myChart.resize();
+				}
+
+				ue.interface.ChangeSize = function(data) {
+					//alert("I am an alert box!!");
+					change(data[0], data[1]);
+					bind();
+
+				};
+
+				ue.interface.TransColor = function(data) {
+					myColor = data;
+				};
+
+				ue.interface.TransColorFresh = function(data) {
+					myColor = data;
+					fresh();
+				};
+
+				ue.interface.TransData = function(data) {
+					//alert(data);
+					var obj = JSON.parse(data);
+					dataTemp1 = obj.data1;
+					dataTemp2 = obj.data2;
+					fresh();
+				};
+				//刷新数据但不刷新动画，只是曲线变化
+				ue.interface.Ani = function(data) {
+					var myOption = myChart.getOption();
+					myChart.setOption(myOption);
+				};
+
+				//刷新动画且更新数据
+				ue.interface.ReAni = function(data) {
+					var myOption = myChart.getOption();
+					myChart.clear();
+					myChart.setOption(myOption);
+				};
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					dataList1 = data;
+					fresh();
+				};
+
+				ue.interface.TransList1 = function(data) {
+					dataTitle = data;
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

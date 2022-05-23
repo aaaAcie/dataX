@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				let BeginSize = [418, 267];
+				let myChart = null;
+				let myColor = ['#58E5B0', '#9B6AE2', '#E5BC8D', '#17A4FA'];
+				let dataList = [16, 11, 12, 12,10, 13, 0];
+				let dataList1 = [2, 4, 4, 4,4,4,4];
+				let dataTitle = ['10亿以上','5-10亿','1-5亿','5千万-1亿','1-5千万','百万级','其他'];
+
+				function fresh() {
+					if (myChart == null) {
+						myChart = echarts.init(document.getElementById('main')); //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+					backgroundColor: 'rgba(3, 16, 38, 0.71)',
+					title:[{
+					    text: "未披露：指已发生投融资但未披露融资金额。",
+					    left: "10%",
+					    top: "8%",
+					    textStyle: {
+					      fontSize: 13,
+					      color: "rgba(217, 227, 236, 1)"
+					    }
+					  }],
+					legend: {
+						show: true,
+						itemWidth: 10,
+						itemHeight:10,
+						top:1,
+						left:5,
+						textStyle: {
+						      color: "#DFF8FF",
+							  fontSize:14,
+						    }
+					},
+					xAxis: [{
+						splitLine: {
+							show: false
+						},
+						type: 'value',
+						show: false,
+					}],
+					grid: {
+					        left: '3%',
+					        right: '10%',
+							top:'15%',
+					        bottom: '1%',
+							width:'80%',
+					        containLabel: true,
+							height:'90%'
+					    },
+					yAxis: [{
+						splitLine: {
+							show: false
+						},
+						axisLine: { //y轴
+							show: false
+						},
+						type: 'category',
+						axisTick: {
+							show: false
+						},
+						inverse: true,
+						data: dataTitle,
+						axisLabel: {
+							color: '#DFF8FF',
+							fontSize: 15,
+						}
+					}],
+					series: [{
+						name: '融资金额(亿元)',
+						type: 'bar',
+						barWidth: 8, // 柱子宽度
+						barGap:1,
+						label: {
+							show: true,
+							position: 'right', // 位置
+							color: '#C1E2FF',
+							fontSize: 15,
+							distance: 10, // 距离
+							formatter:function(params){
+								if(params.data==0){
+									return '未披露'
+								}else{
+									return params.data
+								}
+							}
+							
+						}, // 柱子上方的数值
+						itemStyle: {
+							barBorderRadius: [0, 20, 20, 0], // 圆角（左上、右上、右下、左下）
+							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+								offset: 0,
+								color: '#04CDF4'
+							}, {
+								offset: 1,
+								color: '#2682FF'
+							}], false), // 渐变
+						},
+						data: dataList
+					}, {
+						name: '融资事件数量(起)',
+						type: 'bar',
+						barWidth: 8, // 柱子宽度
+						label: {
+							show: true,
+							position: 'right', // 位置
+							color: 'rgba(255, 255, 255, 0.9)',
+							fontSize: 15,
+							distance: 10, // 距离
+							
+						}, // 柱子上方的数值
+						itemStyle: {
+							barBorderRadius: [0, 20, 20, 0], // 圆角（左上、右上、右下、左下）
+							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+								offset: 0,
+								color: '#F5D75F'
+							}, {
+								offset: 1,
+								color: '#F5AF0F'
+							}], false), // 渐变
+						},
+						data: dataList1
+					}]
+				};
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					dataList = data;
+					fresh();
+				};
+				ue.interface.TransList1 = function(data) {
+					dataList1 = data;
+					fresh();
+				};
+
+				ue.interface.TransList2 = function(data) {
+					itemTitle = data;
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

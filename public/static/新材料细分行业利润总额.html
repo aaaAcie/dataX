@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<script>
+				let BeginSize = [418.48, 267.06];
+				let myChart = null;
+				let myColor=['#E3A693','#01ECFF','#D5A4E2','#1D96FC','rgba(3, 16, 38, 0.71)'];
+				let titleData=['磁性材料', '电子信息', '高分子', '金属材料']
+				let tempData=[20, 30, 120, 10]
+				let tempData1=[20, 40, 140, 10]
+				
+				function fresh() {
+					if (myChart==null) {
+					    myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+						backgroundColor: '#031026',
+						// tooltip: {
+						// 		trigger: 'axis',
+						// 		axisPointer: {
+						// 		    type: 'none'
+						// 		}
+						// 	},
+							tooltip: {
+								trigger: 'axis',
+								backgroundColor: "#031026",
+								borderColor: "#031026",
+							
+								axisPointer: {
+									type: 'none'
+								},
+								formatter: function(params) {
+									var str =
+										`<h2 style=font-size:14px;>${params[0].name}</h2>
+									<span style=font-size:14px>${params[0].seriesName}</span><span style=color:#70C1FF;font-size:14px;padding-left:20px;>${params[0] ? params[0].data : ''}</span><br />
+									<span style=font-size:14px>${params[1].seriesName}</span><span style=color:#F5D75F;font-size:14px;padding-left:20px;>${params[1] ? params[1].data : ''}</span>`
+									return str
+							
+								},
+							},
+							legend: {
+								show: false,
+							},
+							title:{
+								show:false
+							},
+							grid: {
+								left: '3%',
+								right: '3%',
+								bottom: '5%',
+								width: "95%",
+								height:'70%',
+								containLabel: true
+							},
+							xAxis: [{
+								splitLine: {
+									show: false
+								},
+								axisLine: {
+									show: true,
+									lineStyle:{
+										type:'solid',
+										color:'#B1B1B1',
+										width:1
+									}
+								},
+								axisTick :{
+									show:false,
+								},
+								axisLabel: {
+									color: '#DFF8FF',
+									fontSize: 17,
+									interval:0,
+								},
+								data: titleData,
+								type: 'category',
+								show: true,
+							}],
+							yAxis: [{
+								splitLine: {
+									show: true,
+									lineStyle:{
+										type:'dotted',
+										color:'#556468',
+										width:1
+									}
+								},
+								axisLine: { //y轴
+									show: true,
+									lineStyle:{
+										type:'solid',
+										color:'#B1B1B1',
+										width:1
+									}
+								},
+								name:'单位：亿元',
+								nameLocation: "end",
+								nameTextStyle:{
+									color:'#99C8FF',
+									fontSize:15,
+								},
+								type: 'value',
+								axisTick: {
+									show: false
+								},
+								axisLabel: {
+									color: 'rgba(255,255,255,0.6)',
+									fontSize: 15,
+									margin: 10,
+								},
+							}],
+							series: [
+								{
+								    type: 'bar',
+								    name:'2019',
+								    barWidth: 12,
+								    data:tempData,
+									yAxisIndex: 0, 
+									barGap:1.8,
+									label: {
+										show: true,
+										position: 'top', // 位置
+										color: '#f0ffff',
+										fontSize: 14,
+										fontWeight:600,
+										distance: 10, // 距离
+										formatter: function(params){
+											return params.data.toFixed(1)
+										}
+									}, // 柱子上方的数值
+								    itemStyle: {
+								      barBorderRadius:[4,4,0,0],
+								      color:new echarts.graphic.LinearGradient(0, 1, 0, 0,
+								        [{
+								          offset: 0, color: '#2682FF' // 0% 处的颜色
+								        }, {
+								          offset: 1, color: '#70C1FF' // 100% 处的颜色
+								        }])
+								    }
+								  },
+								  {
+								    type: 'bar',
+								    name:'2020',
+								    barWidth: 12,
+								    data:tempData1,
+									yAxisIndex: 0, 
+									barGap:1.8,
+									label: {
+										show: true,
+										position: 'top', // 位置
+										color: '#f0ffff',
+										fontSize: 14,
+										fontWeight:600,
+										distance: 10, // 距离
+										formatter: function(params){
+											return params.data.toFixed(1)
+										}
+									}, // 柱子上方的数值
+								    itemStyle: {
+								      color:new echarts.graphic.LinearGradient(0, 1, 0, 0,
+								          [{
+								            offset: 0, color: '#F5AF0F' // 0% 处的颜色
+								          }, {
+								            offset: 1, color: '#F5D75F' // 100% 处的颜色
+								          }]),
+								      barBorderRadius:[4,4,0,0]
+								    }
+								  },
+								]
+						
+					};
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					titleData = data[0];
+					tempData = data[1];
+					tempData1 = data[2];
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

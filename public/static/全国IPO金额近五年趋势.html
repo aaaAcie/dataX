@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>全国IPO金额近五年趋势</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				let BeginSize = [400, 205];
+				let myChart = null;
+				let myColor = ['#58E5B0', '#9B6AE2', '#E5BC8D', '#17A4FA'];
+				let dataList = [2.35, 2.24, 1.09, 5.21, 34.67];
+				let dataList1 = [0, -4.59, -51.22, 376.28, 565.47];
+				let dataTitle = ['2017', '2018', '2019', '2020', '2021'];
+
+				function fresh() {
+					// 用于计算增长率
+					let data_zj = dataList.slice(0,-1)
+					data_zj.unshift(dataList[0])
+					// 增长率
+					// dataList1 = []
+					// dataList.forEach((item,index) => {
+					// 	dataList1.push((item / data_zj[index] -1).toFixed(2)*100)
+					// })
+					// console.log(dataList)
+					// console.log(dataList1)
+
+					let minNum = Math.min.apply(null, dataList1) - 10
+					console.log(minNum, Math.ceil((Math.max.apply(null, dataList1)-minNum) / 5) * 5)
+
+
+					if (myChart == null) {
+						myChart = echarts.init(document.getElementById('main')); //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+						backgroundColor: 'rgba(3, 16, 38, 0.71)',
+						title: [
+						{
+							text:'单位：亿元',
+							top: '4%',
+							left:'3%',
+							textStyle: {
+								fontSize: 15,
+								color: "#99c8ff",
+								fontFamily: 'SourceHanSansCN'
+							}
+						},{
+							text:'单位：%',
+							top: '4%',
+							right:'3%',
+							textStyle: {
+								fontSize: 15,
+								color: "#99c8ff",
+								fontFamily: 'SourceHanSansCN'
+							}
+						}],
+						tooltip: {
+							trigger: 'axis',
+							// backgroundColor: "#0a1825",
+							backgroundColor: "#031026",
+
+							borderColor: "#0a1825",
+							axisPointer: {
+							    type: 'none',
+							},
+							formatter: function(params){
+								var str = `${params[0].name}<br /><span style=font-size:13px>金额</span> <span style=color:#00D8FF;font-size:12;>${params[0] ? params[0].data : ''}</span>
+								<br /><span style=font-size:13px>增长率</span> <span style=color:#00D8FF;font-size:12;>${params[2]? params[2].data : ''}%</span>`
+								return str
+								
+							},
+							textStyle: {
+							      color: "#FFFFFF",
+								  fontSize:14
+							},
+						},
+						legend: {
+							show: false,
+						},
+						grid: {
+							left: '3%',
+							right: '3%',
+							top: '20%',
+							width: "92%",
+							height: '75%',
+							containLabel: true
+						},
+						xAxis: [{
+							splitLine: {
+								show: false
+							},
+							axisLine: {
+								show: true,
+								lineStyle: {
+									type: 'solid',
+									color: '#B1B1B1',
+									width: 1
+								}
+							},
+							axisTick: {
+								show: false,
+							},
+							axisLabel: {
+								color: '#DFF8FF',
+								fontSize: 17,
+								interval: 0,
+							},
+							data: dataTitle,
+							type: 'category',
+							show: true,
+						}],
+						yAxis: [{
+								id: 0,
+								splitLine: {
+									show: true,
+									lineStyle: {
+										type: 'dotted',
+										color: '#556468',
+										width: 1
+									}
+								},
+								axisLine: { //y轴
+									show: true,
+									lineStyle: {
+										type: 'solid',
+										color: '#B1B1B1',
+										width: 1
+									}
+								},
+								type: 'value',
+								axisTick: {
+									show: false
+								},
+								axisLabel: {
+									color: 'rgba(255,255,255,0.6)',
+									fontSize: 15,
+									margin: 10,
+								},
+								splitNumber: 3,
+								// interval: Math.ceil(Math.max.apply(null, dataList) / 3), //Math.max.apply取出数组最大值
+								// max: Math.ceil(Math.max.apply(null, dataList) / 3) * 3, //Math.ceil向上取整
+								// min: 0,
+							},
+							{
+								id: 1,
+								axisLine: {
+									show: true,
+									lineStyle: {
+										type: 'solid',
+										color: '#B1B1B1',
+										width: 1
+									}
+								},
+								splitLine: {
+									show: false,
+								},
+								type: 'value',
+								axisTick: {
+									show: false,
+								},
+								axisLabel: {
+									color: 'rgba(255,255,255,0.6)',
+									fontSize: 15,
+									// interval: 0.2,
+									// formatter: '{value}%'
+								},
+								splitNumber: 3,
+								// interval: Math.ceil(Math.max.apply(null, dataList1) / 3), //Math.max.apply取出数组最大值
+								// max: Math.ceil((Math.max.apply(null, dataList1)-minNum) / 3) * 3, //Math.ceil向上取整
+								// min: minNum,
+								// onZeroAxisIndex: 0,
+							}
+						],
+						series: [{
+								name: '金额',
+								type: 'pictorialBar',
+								yAxisIndex: 0,
+								symbolSize: [20, 10],
+								symbolOffset: [0, -5],
+								symbolPosition: 'end',
+								color:'#008ED7',
+								z: 8,
+								data: dataList,
+							},
+							{
+								type: 'bar',
+								name: '金额',
+								yAxisIndex: 0,
+								itemStyle: {
+									normal: {
+										color: new echarts.graphic.LinearGradient(0, 0, 0, 1,
+											[{
+												offset: 0,
+												color: '#00A8FF' // 0% 处的颜色
+											}, {
+												offset: 1,
+												color: '#00D8FF' // 100% 处的颜色
+											}]),
+									},
+								},
+								barWidth: '20',
+								data: dataList,
+							},
+							{
+								type: 'line',
+								name: '增长率',
+								data: dataList1,
+								yAxisIndex: 1,
+								z: 10,
+								smooth: false, //平滑曲线显示
+								symbol: "circle", //标记的图形为实心圆
+								symbolSize: 5, //标记的大小
+								itemStyle: {
+									normal: {
+										color: '#00FFE5 ',
+										borderColor: '#00FFE5 ', //圆点透明 边框
+										borderWidth: 1
+									},
+								},
+								lineStyle: {
+									type: "dashed",
+									color: "#00FFE5 "
+								},
+								markLine: {
+									data: [{
+										name: '增长率为0的基准线',
+										yAxis: 0,
+										symbol: 'none'
+										// 0: {
+										// 	coord: [0,0],
+										// 	symbol: 'none'
+
+										// },
+										// 1: {
+										// 	coord: [4,0],
+										// 	symbol: 'none'
+										// },
+									}],
+									lineStyle: {
+										color: 'rgba(255, 255, 255, 0.6)'
+									},
+									label: {
+										show: false
+									}
+								}
+							}
+						]
+					};
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				// ue.interface.TransList = function(data) {
+				// 	dataList = data;
+				// 	fresh();
+				// };
+				// ue.interface.TransList1 = function(data) {
+				// 	dataList1 = data;
+				// 	fresh();
+				// };
+				//
+				// ue.interface.TransList2 = function(data) {
+				// 	itemTitle = data;
+				// 	fresh();
+				// };
+				ue.interface.TransList = function(data) {
+					var obj = JSON.parse(data);
+					dataList = obj.data1;
+					dataList1 = obj.data2;
+					dataTitle = obj.data3;
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

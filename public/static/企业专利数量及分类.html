@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<script>
+				let BeginSize = [418.48, 267.06];
+				let myChart = null;
+				let myColor = ['#FAC858', '#73C0DE', '#91CC75', '#5470C6', '#EE6666',
+				'#FAC858', '#73C0DE', '#91CC75', '#5470C6', '#EE6666',
+				'#FAC858', '#73C0DE', '#91CC75', '#5470C6', '#EE6666']
+				let chmyColor=myColor
+				let myColor1 = ['#0088FF', '#FFA407','#FC8452 ']
+				
+				let bigTitle = ['磁性材料', '其他材料', '先进高分子材料', '金属新材料', '电子信息材料',
+					'磁性材料', '其他材料', '先进高分子材料', '金属新材料', '电子信息材料',
+					'磁性材料', '其他材料', '先进高分子材料', '金属新材料', '电子信息材料'
+				]
+				let allValue = [161, 134, 127, 56, 11, 65, 52, 49, 20, 7, 1, 65, 18, 15, 4, 4]
+				let titleList = ['发明专利', '发明授权', '实用新型']
+				
+				function fresh() {
+					if (myChart == null) {
+						myChart = echarts.init(document.getElementById('main')); //利用原型调取Echarts的初始化方法
+					}
+					let bigData = []
+					bigTitle.forEach((item, index) => {
+						bigData.push({
+							name: item,
+							value: allValue[index],
+							itemStyle: {
+							        color:chmyColor[index]
+							}
+						})
+					})
+					let fmSum = allValue.slice(0, 5).reduce((n, m) => n + m, 0)
+					let sySum = allValue.slice(5, 10).reduce((n, m) => n + m, 0)
+					let wgSum = allValue.slice(10, 15).reduce((n, m) => n + m, 0)
+					// console.log(this.cockpitData[0].patent_type)
+					let smallData = [{
+							name: titleList[0],
+							value: fmSum,
+							itemStyle: {
+							        color:myColor1[0]
+							}
+						},
+						{
+							name: titleList[1],
+							value: sySum,
+							itemStyle: {
+							        color:myColor1[1]
+							}
+						}, {
+							name: titleList[2],
+							value: wgSum,
+							itemStyle: {
+							        color:myColor1[2]
+							}
+						}
+					]
+					let option = {
+						backgroundColor: 'rgba(3, 16, 38, 0.71)',
+						legend: {
+							show:false
+							// data: bigData,
+							// orient: "vertical",
+							// itemWidth: 10,
+							// itemHeight: 10,
+							// icon: "circle",
+							// right: '2%',
+							// top: '25%',
+							// textStyle: {
+							// 	color: '#DFF8FF',
+							// 	fontSize: 15
+							// },
+
+						},
+						series: [{
+								// color: myColor1,
+								type: 'pie',
+								center: ['34%', '50%'],
+								radius: ['0%', '39%'],
+								itemStyle: {
+									normal: {
+										borderColor: 'rgba(3, 16, 38, 0.71)',
+										borderWidth: 3,
+									}
+								},
+								label: {
+									normal: {
+										position: 'inner',
+										textStyle: {
+											rich: {
+												aaa: {
+													fontSize: 14,
+													color: '#DFF8FF',
+													fontWeight: "bold",
+													padding: [10, 0, -8, 0]
+												},
+												bbb: {
+													fontSize: 14,
+													color: '#DFF8FF',
+													fontWeight: "bold",
+													padding: [2, 10, 0, 0]
+												},
+												ccc: {
+													align: 'right',
+													fontSize: 14,
+													color: '#DFF8FF',
+													fontWeight: "bold",
+													padding: [0, 0, 0, 5]
+												}
+											}
+										},
+										formatter: function(params) {
+											switch (params.dataIndex) {
+												case 0:
+													return "{aaa|" + params.name.slice(0, 2) + '\n' + params.name.slice(
+														2, 4) +  "}"
+													break;
+												case 1:
+													return "{bbb|" + params.name.slice(0, 2) + '\n' + params.name.slice(
+														2, 4) + "}"
+													break;
+												default:
+													return "{ccc|" + params.name.slice(0, 2) + '\n' + params.name.slice(
+														2, 4) + "}"
+													break;
+											}
+
+										}
+									},
+
+								},
+								labelLine: {
+									normal: {
+										show: false
+									}
+								},
+								data: smallData
+							},
+							{
+								type: 'pie',
+								radius: ['50%', '65%'],
+								center: ['34%', '50%'],
+								data: bigData,
+								labelLine: {
+									normal: {
+										length: 7,
+										length2: 14,
+										lineStyle: {
+											color: '#C8C8C8'
+										}
+									}
+								},
+								label: {
+									normal: {
+										formatter: '{c}',
+										color: "#02D4FE",
+										fontSize: 15,
+										fontWeight: "bold",
+										distanceToLabelLine: 0,
+										padding: [-2, 0, 0, 0],
+
+									}
+								},
+							}
+						]
+					};
+					myChart.on('click',  param=> {// 这个params可以获取你要的图中的当前点击的项的参数
+						let k=param.dataIndex
+						for(let i in smallData){
+							if(i==k){
+								myChart.dispatchAction({
+									type: 'highlight',//突出高亮显示;
+									seriesIndex: 0,
+									dataIndex: k
+								})
+							}else{
+								myChart.dispatchAction({
+									type: 'downplay',//突出高亮显示;
+									seriesIndex: 0,
+									dataIndex: i
+								})
+							}
+						}
+						option.series[0].data.forEach((item,index)=>{
+							if(k==index&&k==0){
+								item.itemStyle.color='#0088FF'
+							}else if(k==index&&k==1){
+								item.itemStyle.color='#FFA407'
+							}else if(k==index&&k==2){
+								item.itemStyle.color='#FC8452'
+							}else{
+								item.itemStyle.color='rgba(129, 139, 131, 1.0)'
+							}
+						})
+						let min=k*5
+						let max=k*5+5
+						option.series[1].data.forEach((item,index)=>{
+							
+							if(min<=index&&index<max){
+								item.itemStyle.color=myColor[index]
+							}else{
+								item.itemStyle.color='rgba(120, 122, 122, 0.7)'
+							}
+						})
+						
+						myChart.setOption(option);
+					});
+					myChart.on('dblclick',  param=> {// 这个params可以获取你要的图中的当前点击的项的参数
+						let k=param.dataIndex
+						for(let i in smallData){
+							myChart.dispatchAction({
+								type: 'downplay',//突出高亮显示;
+								seriesIndex: 0,
+								dataIndex: i
+							})
+						}
+						option.series[0].data.forEach((item,index)=>{
+							item.itemStyle.color=myColor1[index]
+						})
+						option.series[1].data.forEach((item,index)=>{
+							item.itemStyle.color=myColor[index]
+						})
+						myChart.setOption(option);
+					});
+					myChart.setOption(option);
+				}
+				fresh();
+				
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					titleData = data[0];
+					tempData = data[1];
+					tempData1 = data[2];
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

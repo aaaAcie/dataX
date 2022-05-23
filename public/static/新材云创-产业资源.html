@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+				@font-face {
+					font-family:DIN;
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				let BeginSize = [353, 165];
+				let myChart = null;
+				let myColor = ['#0088FF', '#E3A693', '#D5A4E2', '#FACD91', '#5F1DFC', '#5B7082'];
+				let dataList1 = [40, 20,15,10,10,5];
+				let dataTitle = ['美国', '日本','英国', '德国','印度', '荷兰']
+				function fresh() {
+					let total=eval(dataList1.join("+"))
+					let dataSeries = []
+					let resObj = {};
+					dataList1.forEach((item, index) => {
+						dataSeries.push({
+							value: item,
+							name: dataTitle[index],
+						})
+					})
+					for (let i in dataSeries) {
+						resObj[dataSeries[i]["name"]] = dataSeries[i];
+					}
+					let option = {
+						backgroundColor: '#031026',
+						title: {
+						    text: `地域分类\n{bbb|${total}}个`,
+						    left: "19%",
+						    top: "center",
+						    textStyle: {
+							color:'#E0EDF9',
+						    fontSize: 16,
+							lineHeight: 28,
+							fontWeight: "normal",
+							  rich:{
+								  bbb:{
+								  		color:'#FFFFFF',
+								  		fontSize: 18,
+										align: 'center',
+										fontWeight: "bold"
+								  }
+							  }
+						    },
+						  },
+						grid: {
+							left: '5%',
+							right: '8%',
+							bottom: '3%',
+							containLabel: true
+						},
+						tooltip: {
+							trigger: 'item',
+							formatter: "{b} : {c} ({d}%) "
+						},
+						legend: {
+							itemGap:9,
+							icon: "circle",
+							itemWidth:10,
+							itemHeight:10,
+							orient: 'vertical', // 布局方式，默认为水平布局，可选为：'horizontal' ¦ 'vertical'
+							right: '10%',
+							top:'middle',
+							textStyle: {
+								color: "#FFFFFF",
+								fontSize: 15,
+								
+								rich:{
+									ltext:{
+										color: "#00DCFF",
+										fontSize: 15,
+										
+									}
+								}
+							},
+							formatter: function(name){
+								let num=resObj[name].value;
+								let toNum=(resObj[name].value/total*100).toFixed(0)
+								if(resObj[name].value.toString().length == 1){
+									num='0'+resObj[name].value.toString()
+								}
+								if((resObj[name].value/total*100).toFixed(0).toString().length == 1){
+									toNum='0'+(resObj[name].value/total*100).toFixed(0).toString()
+								}
+								return name +'   '+ '{ltext|'+toNum+'%'+'}'+'  '+num
+							}
+						},
+						color:myColor,
+						series: {
+							hoverOffset: 4,
+							legendHoverLink:false,
+							itemGap: 20,
+							name: '访问来源',
+							type: 'pie',
+							radius: ['62%', '92%'],
+							center: ['30%', '50%'],
+							data: dataSeries,
+							itemGap: 20,
+							label: {
+								show: false,
+							},
+							itemStyle: {
+								borderColor: '#031026',
+								borderWidth: 2
+							},
+						}
+
+					};
+					myChart.setOption(option);
+				}
+				bind();
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+				changeBorder('red', false, 'topl', 10);
+				//fresh();
+				function bind() {
+					myChart = echarts.init(document.getElementById('main'));
+				}
+
+				function LinkUE4() {
+					//alert("I am an alert box!!");
+					//ue4("getData2",{mes:"get all data"});
+					ue4("CallBack", {}, function(v) {
+						alert("I am an alert box!!");
+					});
+				};
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+				function changeBorder(x, y, p, n) {
+					let div = document.getElementById("main");
+					div.style.border = `0px solid ${x}`;
+					if (y) {
+						div.style.borderRadius = '10px'
+					} else {
+						if (p = 'topl') {
+							div.style.borderTopLeftRadius = n + 'px';
+						} else if (p = 'topr') {
+							div.style.borderTopRightRadius = n + 'px';
+						} else if (p = 'bottoml') {
+							div.style.borderBottomLeftRadius = n + 'px';
+						} else if (p = 'bottomr') {
+							div.style.borderBottomRightRadius = n + 'px';
+						}
+					}
+					myChart.resize();
+				}
+
+				ue.interface.ChangeSize = function(data) {
+					//alert("I am an alert box!!");
+					change(data[0], data[1]);
+					bind();
+
+				};
+
+				ue.interface.TransColor = function(data) {
+					myColor = data;
+				};
+
+				ue.interface.TransColorFresh = function(data) {
+					myColor = data;
+					fresh();
+				};
+
+				ue.interface.TransData = function(data) {
+					//alert(data);
+					var obj = JSON.parse(data);
+					dataTemp1 = obj.data1;
+					dataTemp2 = obj.data2;
+					fresh();
+				};
+				//刷新数据但不刷新动画，只是曲线变化
+				ue.interface.Ani = function(data) {
+					var myOption = myChart.getOption();
+					myChart.setOption(myOption);
+				};
+
+				//刷新动画且更新数据
+				ue.interface.ReAni = function(data) {
+					var myOption = myChart.getOption();
+					myChart.clear();
+					myChart.setOption(myOption);
+				};
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					dataList1 = data;
+					fresh();
+				};
+
+				ue.interface.TransList1 = function(data) {
+					dataTitle = data;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

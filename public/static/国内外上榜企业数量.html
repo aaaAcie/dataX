@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>间隔柱状</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./dist/echarts-gl.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script> 
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		
+		-->
+			<script>
+				let BeginSize = [415, 267];
+				let myColor=['rgba(53, 115, 255, 0.9)','rgba(56, 172, 255, 0.9)','rgba(53, 155, 255, 0.9)','rgba(124, 195, 245, 0.9)','rgba(191, 243, 180, 0.9)','rgba(107, 206, 153, 0.9)','rgba(105, 105, 244, 0.9)','rgba(242, 255, 230, 0.9)']
+				
+				let myColor1=['#f2ffe6','#bff3b4','#6bce99','#7cc3f5','#38acff','#3573ff','#6969f4','#895bff']
+				let dataTemp1=[{ name: '中国新材料', value: 8},{ name: '国外新材料', value: 57}]
+				
+				function fresh() {
+					
+					
+					let resObj={}
+					for (let i in dataTemp1) {
+						resObj[dataTemp1[i].name] = dataTemp1[i]
+					}
+					dataTemp1.forEach((item,index)=>{
+						item.itemStyle={color:myColor[index]}
+					})
+					let maxNum=eval(dataTemp1.map(item=>{return item.value}).join("+"))
+					// var { data, optionConfig } = {
+					//     data: [
+					//         { name: '固定资产投资', value: 55, itemStyle: { color: '#319DFF' }, startRatio: 0, endRatio: 0.10 },
+					//         { name: '其他投资', value: 45, itemStyle: { color: '#66D7FF' }, startRatio: 0.10, endRatio: 0.2 },
+					//     ],
+					//     optionConfig: {},
+					// };
+					const getPie3D = (pieData, internalDiameterRatio) => {
+					    let series = [];
+					    let sumValue = 0;
+					    let startValue = 0;
+					    let endValue = 0;
+					    let legendData = [];
+					    let k =
+					        typeof internalDiameterRatio !== 'undefined'
+					            ? (1 - internalDiameterRatio) / (1 + internalDiameterRatio)
+					            : 1 / 3;
+					
+					    // 为每一个饼图数据，生成一个 series-surface 配置
+					    for (let i = 0; i < pieData.length; i++) {
+					        sumValue += pieData[i].value;
+					
+					        let seriesItem = {
+					            name: typeof pieData[i].name === 'undefined' ? `series${i}` : pieData[i].name,
+					            type: 'surface',
+					
+					            parametric: true,
+					            wireframe: {
+					                show: false,
+					            },
+					            pieData: pieData[i],
+					            pieStatus: {
+					                selected: false,
+					                hovered: false,
+					                k: k,
+					            },
+					            labelLine: {
+					                show: false,
+					            },
+					            label: {
+					                show: false,
+					                // normal: {
+					                //   position: "inner",
+					                //   formatter: (params) => {
+					                //     return params;
+					                //   },
+					                // },
+					            },
+					            itemStyle: {
+					                opacity: 1,
+					            },
+					        };
+					
+					        if (typeof pieData[i].itemStyle != 'undefined') {
+					            let itemStyle = {};
+					
+					            typeof pieData[i].itemStyle.color != 'undefined' ? (itemStyle.color = pieData[i].itemStyle.color) : null;
+					            typeof pieData[i].itemStyle.opacity != 'undefined'
+					                ? (itemStyle.opacity = pieData[i].itemStyle.opacity)
+					                : null;
+					
+					            seriesItem.itemStyle = itemStyle;
+					        }
+					        series.push(seriesItem);
+					    }
+					
+					    // 使用上一次遍历时，计算出的数据和 sumValue，调用 getParametricEquation 函数，
+					    // 向每个 series-surface 传入不同的参数方程 series-surface.parametricEquation，也就是实现每一个扇形。
+					    for (let i = 0; i < series.length; i++) {
+					        endValue = startValue + series[i].pieData.value;
+					        // console.log(series[i]);
+					        series[i].pieData.startRatio = startValue / sumValue;
+					        series[i].pieData.endRatio = endValue / sumValue;
+					        series[i].parametricEquation = getParametricEquation(
+					            series[i].pieData.startRatio,
+					            series[i].pieData.endRatio,
+					            false,
+					            false,
+					            k,
+					            series[i].pieData.value
+					        );
+					
+					        startValue = endValue;
+					
+					        legendData.push(series[i].name);
+					    }
+					
+					    // 准备待返回的配置项，把准备好的 legendData、series 传入。
+					    let option = {
+								// backgroundColor: '#031026',
+					        tooltip: {
+					            // backgroundColor: '#053A8D',
+											backgroundColor: "#031026",
+					            formatter: (params) => {
+												// console.log(params)
+												// console.log(option.series)
+					                if (params.seriesName !== 'mouseoutSeries' && params.seriesName !== '指引线') {
+					                    return `${
+					                        params.seriesName
+					                    }<br/><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${
+					                        params.color
+					                    };"></span>${
+																(option.series[params.seriesIndex].pieData.value/maxNum*100).toFixed(0)
+																// option.series[params.seriesIndex].pieData.value
+															}%`;
+					                }
+					            },
+					        },
+					
+					        labelLine: {
+					            show: true,
+					        },
+					        legend: {
+					            orient: 'horizontal',
+											selectedMode:false,
+					            data: legendData,
+					            textStyle: {
+												height: 24,
+												color: '#DFF8FF',
+												fontSize: 12,
+												lineHeight: 24,
+												padding: [0,0,-2,0]
+					            },
+					            itemWidth: 9,
+					            itemHeight: 9,
+											itemGap: 20,
+					            icon: 'circle',
+					            formatter: function (name) {
+					                // let item = data.filter((item) => item.name == name)[0];
+					                // return name+'  '+(resObj[name].value/maxNum*100).toFixed(0)+'%';
+													// return name+'  '+resObj[name].value+'%';
+													return name
+
+					            },
+					            right: '4%',
+					            top: '5%', //居右显示
+					        },
+					        xAxis3D: {
+					            min: -0.9,
+					            max: 0.6,
+					        },
+					        yAxis3D: {
+					            min: -0.9,
+					            max: 0.6,
+					        },
+					        zAxis3D: {
+					            min: -0.9,
+					            max: 2.9,
+					        },
+					        grid3D: {
+					            show: false,
+					            boxHeight: 2,
+					            top: '-0%',
+					            left: '-3%',
+					            // environment: "#021041",
+					            viewControl: {
+					                distance: 6000,
+					                alpha: 30,
+					                beta: 80,
+													rotateSensitivity: 0, //设置为0无法旋转
+													zoomSensitivity: 0, //设置为0无法缩放
+													panSensitivity: 0, //设置为0无法平移
+					            },
+					        },
+					        series: series,
+					    };
+					    return option;
+					};
+					// 生成扇形的曲面参数方程，用于 series-surface.parametricEquation
+					const getParametricEquation = (startRatio, endRatio, isSelected, isHovered, k, height) => {
+					    // 计算
+					    let midRatio = (startRatio + endRatio) / 2;
+					
+					    let startRadian = startRatio * Math.PI * 2;
+					    let endRadian = endRatio * Math.PI * 2;
+					    let midRadian = midRatio * Math.PI * 2;
+					
+					    // 如果只有一个扇形，则不实现选中效果。
+					    if (startRatio === 0 && endRatio === 1) {
+					        isSelected = false;
+					    }
+					
+					    // 通过扇形内径/外径的值，换算出辅助参数 k（默认值 1/3）
+					    k = typeof k !== 'undefined' ? k : 1 / 3;
+					
+					    // 计算选中效果分别在 x 轴、y 轴方向上的位移（未选中，则位移均为 0）
+					    let offsetX = isSelected ? Math.cos(midRadian) * 0.1 : 0;
+					    let offsetY = isSelected ? Math.sin(midRadian) * 0.1 : 0;
+					
+					    // 计算高亮效果的放大比例（未高亮，则比例为 1）
+					    let hoverRate = isHovered ? 1.05 : 1;
+					
+					    // 返回曲面参数方程
+					    return {
+					        u: {
+					            min: -Math.PI,
+					            max: Math.PI * 3,
+					            step: Math.PI / 32,
+					        },
+					
+					        v: {
+					            min: 0,
+					            max: Math.PI * 2,
+					            step: Math.PI / 20,
+					        },
+					
+					        x: function (u, v) {
+					            if (u < startRadian) {
+					                return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+					            }
+					            if (u > endRadian) {
+					                return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+					            }
+					            return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
+					        },
+					
+					        y: function (u, v) {
+					            if (u < startRadian) {
+					                return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+					            }
+					            if (u > endRadian) {
+					                return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+					            }
+					            return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
+					        },
+					
+					        z: function (u, v) {
+					            if (u < -Math.PI * 0.5) {
+					                return Math.sin(u);
+					            }
+					            if (u > Math.PI * 2.5) {
+					                return Math.sin(u);
+					            }
+					            return Math.sin(v) > 0 ? 0.9 * height : -1;
+											// return 149
+					        },
+					    };
+					};
+					
+					option = getPie3D(dataTemp1, 0);
+					option.series.push({
+						name: '指引线', //自己根据场景修改
+						backgroundColor: 'transparent',
+						type: 'pie',
+						label: {
+							opacity: 1,
+							fontSize: 17,
+							lineHeight: 20,
+							padding:[0,-70,20,-70],
+							// position: 'inner',
+							formatter: function(params){
+								// return params.value + '项 ' + params.percent + '%'
+								return `{a|${params.value}家 }{b|${params.percent.toFixed(0)}%}`
+							},
+							rich: {
+								a: {
+									// width: 36,
+									fontSize: 16,
+									color: '#DFF8FF',
+									lineHeight: 10,
+								},
+								b: {
+									fontSize: 16,
+									color: '#00D8FF',
+									height: 40,
+									// width: 36
+								},
+							}
+						},
+						labelLine: {
+							length: 35,
+							length2: 70,
+							lineStyle: {
+								width: 2,
+								color: '#9EDCF6',
+								cap: 'round',
+								shadowBlur: 'rgba(0, 0, 0, 0.5)',
+    						shadowBlur: 7
+							}
+						},
+						startAngle: -55, // 起始角度，支持范围[0, 360]。
+						clockwise: false, // 饼图的扇区是否是顺时针排布。上述这两项配置主要是为了对齐3d的样式
+						radius: ['40%', '60%'],
+						center: ['51%', '52%'],
+						data: dataTemp1,
+						itemStyle: {
+							opacity: 0  //这里必须是0，不然2d的图会覆盖在表面
+						}
+					})
+					myChart = echarts.init(document.getElementById('main'));
+					myChart.setOption(option);
+				}
+
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+				changeBorder('red', false, 'topl', 10);
+				//fresh();
+
+				function LinkUE4() {
+					//alert("I am an alert box!!");
+					//ue4("getData2",{mes:"get all data"});
+					ue4("CallBack", {}, function(v) {
+						alert("I am an alert box!!");
+					});
+				};
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+				function changeBorder(x, y, p, n) {
+					let div = document.getElementById("main");
+					div.style.border = `0px solid ${x}`;
+					if (y) {
+						div.style.borderRadius = '10px'
+					} else {
+						if (p = 'topl') {
+							div.style.borderTopLeftRadius = n + 'px';
+						} else if (p = 'topr') {
+							div.style.borderTopRightRadius = n + 'px';
+						} else if (p = 'bottoml') {
+							div.style.borderBottomLeftRadius = n + 'px';
+						} else if (p = 'bottomr') {
+							div.style.borderBottomRightRadius = n + 'px';
+						}
+					}
+					myChart.resize();
+				}
+
+				// ue.interface.ChangeSize = function(data) {
+				// 	//alert("I am an alert box!!");
+				// 	change(data[0], data[1]);
+
+
+				// };
+
+				ue.interface.TransColor = function(data) {
+					myColor = data;
+				};
+
+				ue.interface.TransColorFresh = function(data) {
+					myColor = data;
+					fresh();
+				};
+
+				ue.interface.TransData = function(data) {
+					//alert(data);
+					var obj = JSON.parse(data);
+					itemTitle = obj.data1;
+					itemData1 = obj.data2;
+					itemData2 = obj.data3;
+					fresh();
+				};
+				//刷新数据但不刷新动画，只是曲线变化
+				ue.interface.Ani = function(data) {
+					var myOption = myChart.getOption();
+					myChart.setOption(myOption);
+				};
+
+				//刷新动画且更新数据
+				ue.interface.ReAni = function(data) {
+					var myOption = myChart.getOption();
+					myChart.clear();
+					myChart.setOption(myOption);
+				};
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					var obj = JSON.parse(data);
+					dataTemp1 = obj.data1;
+					fresh();
+				};
+				
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

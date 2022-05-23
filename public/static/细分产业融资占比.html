@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main" ></div>
+			<script>
+				let BeginSize = [418, 189];
+				let myChart = null;
+				// let dataname=['钐钴永磁', '钕铁硼永磁'];
+				let dataname=['先进基础材料', '关键战略材料','前沿新材料'];
+
+				let datavalue=[31, 50,20];
+				let myColor = ['#9561DF','#F8D08B','#52A2FE','#00F6FF','#FAE8DC','#54D490'] ;
+				let datalist = []
+				
+				let dataSum=0
+				for (var i=0;i<dataname.length;i++) {
+					dataSum+=datavalue[i]
+					datalist.push({
+							value: datavalue[i],
+							name: dataname[i],
+							itemStyle: {
+								color:myColor[i]
+							},
+							
+						});
+				}
+				let objData = array2obj(datalist, "name");
+				function array2obj(array, key) {
+					
+				    var resObj = {};
+				    for (var i = 0; i < array.length; i++) {
+				        resObj[array[i][key]] = array[i];
+				    }
+				    return resObj;
+				}
+				
+				function fresh() {
+					if (myChart==null) {
+					    myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+				    tooltip: {
+						show:false,
+						trigger: 'item',
+					},
+					backgroundColor: '#031026',
+					title: {
+						text: '融资\n占比',
+						left: "20%",
+						top: "center",
+						textStyle: {
+							color:'#E0EDF9',
+							fontSize: 16,
+							lineHeight: 20,
+							fontWeight: "normal",
+						},
+					},
+					grid: {
+						left: 20,
+						right: 150,
+						top:'25%',
+						width:'61%',
+						containLabel: true
+					},
+					legend:{
+						show: true,
+						itemHeight: 10,
+						itemWidth: 10,
+						icon:'circle',
+						orient: 'vertical',
+					    right: '12%',
+					    top:'middle',
+					    bottom: 16,
+					    width:'30%',
+					    itemGap:6,
+					    textStyle: {
+							color:'#D9E3EC',
+							fontSize: 15,
+							lineHeight:19,
+							padding: [0, 0, 0, 6]
+						},
+						formatter:function (name){
+							let p1;
+							if(objData[name].value!=0){
+								 p1 =(objData[name].value / dataSum*100).toFixed(2);
+							}else{
+								 p1=0
+							}
+							return name+' '+p1+'%'
+						}
+					},
+					series:
+					    [{
+					        type: 'pie',
+							color:myColor,
+							radius: ['45%', '70%'],
+							center:['25%','50%'],
+					        data: datalist,
+							labelLine: {
+							    show: false
+							},
+							label:{
+								show: false
+							},
+					    }]
+				};
+				myChart.on('click',  param=> {// 这个params可以获取你要的图中的当前点击的项的参数
+				LinkUE4(param.dataIndex)
+				    // this.tNum=param.dataIndex
+					// this.gettitleData()
+					for(let i in datalist){
+						if(i==param.dataIndex){
+							myChart.dispatchAction({
+								type: 'highlight',//突出高亮显示;
+								seriesIndex: 0,
+								dataIndex: param.dataIndex
+							})
+						}else{
+							myChart.dispatchAction({
+								type: 'downplay',//突出高亮显示;
+								seriesIndex: 0,
+								dataIndex: i
+							})
+						}
+					}
+				});
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+				function LinkUE4(num) {
+							console.log('aaa',num)
+							ue4("getData",{mes:num});
+						};
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					itemData = data;
+					fresh();
+				};
+
+				ue.interface.TransList1 = function(data) {
+					itemTitle = data;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts-5.3.2.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+				@font-face {
+					font-family:DIN;
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main" style="margin-left: 30px;"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				let BeginSize = [418.48, 267.06];
+				let myChart = null;
+				let zdata=[7039,113,99]
+				// zdata[0]=this.cockpitData[0].发明专利申请
+				// zdata[1]=this.cockpitData[0].pct
+				// zdata[2]=this.cockpitData[0].发明专利授权
+				let ndata=[2207,25,65]
+				// ndata[0]=this.cockpitData[1].发明专利申请
+				// ndata[1]=this.cockpitData[1].pct
+				// ndata[2]=this.cockpitData[1].发明专利授权
+				
+				function fresh() {
+					if (myChart==null) {
+					    myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+					// backgroundColor: 'rgba(3, 16, 38, 0.71)',
+					color:['#46BDF2','#F5C338'],
+					// tooltip: {},
+					// legend: {
+					// 	symbol: 'circle',
+					// 	left: 'left',
+					// 	orient: "vertical",
+					// 	left:10,
+					// 	itemWidth: 7,
+					// 	itemHeight: 7,
+					// 	top:10,
+					// 	textStyle: {
+					// 	      color: "#FFFFFF",
+					// 		  fontSize:16
+					// 	},
+					// 	icon: "circle"
+					// },
+					radar: {
+						center: ['50%', '58%'],
+						radius: 90,
+						startAngle: 90,
+						splitNumber: 4,
+						shape: 'circle',
+						indicator: [{
+								name: '发明专利申请\n累计数',
+								// max: maxsq,
+							},
+							{
+								name: 'PCT专利  \n申请累计数',
+								// max:maxpic
+							},
+							{
+								name: ' 发明专利\n授权累计数',
+								// max: maxsqu
+							},
+
+						],
+						// nameGap: 10,
+						axisName:{
+							fontSize: 15,
+							color: '#DFF8FF',
+							// align:'center',
+							lineHeight: 18,
+							padding: [10, 0, 0, 0],
+							formatter:function(value, indicator){
+								// console.log(maxsq)
+								// return  '\n{value|' + value + '}';
+								return  value;
+							},
+						},
+						splitArea: {
+							areaStyle: {
+							          color: ['rgba(27, 103, 148, 1)', 'rgba(27, 103, 148, 0.8)', 'rgba(27, 103, 148, 0.6)', 'rgba(27, 103, 148, 0.3)'],
+							          shadowColor: 'rgba(0, 0, 0, 0.2)',
+							          shadowBlur: 10
+							        }
+						},
+						axisLine: {
+							lineStyle: {
+								color: 'rgba(211, 253, 250, 0.8)',
+							},
+						},
+						splitLine: {
+							lineStyle: {
+								color: 'rgba(211, 253, 250, 0.5)',
+							},
+						},
+					},
+					series: [{
+						type: 'radar',
+						data: [
+							{
+								name: '浙江',
+								value: zdata,
+								areaStyle: {
+									color:'#46BDF2'
+								}
+							},
+							{
+								name: '宁波',
+								value: ndata,
+								areaStyle: {
+									color:'#F5C338'
+								}
+							},
+						],
+					}, ],
+				};
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					itemData = data;
+					fresh();
+				};
+
+				ue.interface.TransList1 = function(data) {
+					itemTitle = data;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

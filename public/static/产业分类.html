@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				let BeginSize = [350, 170];
+				let myChart = null;
+				let myColor = ['#58E5B0','#9B6AE2','#E5BC8D','#17A4FA'];
+				let dataList1 = [144, 135,128,24];
+				let dataTitle = ['高端装备', '交通装备','家用电器','磁组件'];
+				let total=eval(dataList1.join("+"))
+				let dataSeries1 = [];
+				let resObj = {};
+				dataList1.forEach((item, index) => {
+					dataSeries1.push({
+						value: item,
+						name: dataTitle[index]
+					})
+				})
+				for (let i in dataSeries1) {
+					resObj[dataSeries1[i]["name"]] = dataSeries1[i];
+				}
+				function fresh() {
+					if (myChart==null) {
+					    myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+						backgroundColor: '#031026',
+						tooltip: {
+							trigger: 'none'
+						},
+						color:myColor,
+						title: [
+						{
+						    text: '  合计\n'+'{tname|'+total+'家}',
+						    x: '16%',
+						    top: '32%',
+						    textStyle: {
+						        color: '#FFFFFF',
+						        fontSize: 16,
+								lineHeight:20,
+						        fontWeight: 'bold',
+								rich:{
+									tname:{
+										fontSize: 17,
+										color: '#ffffff',
+									}
+								}
+						    },
+						}],
+						legend: {
+							icon: "rect",
+							itemWidth: 15,
+							itemHeight: 15,
+							orient: 'vertical', // 布局方式，默认为水平布局，可选为：'horizontal' ¦ 'vertical'
+							top:'middle',
+							right:'4',
+							textStyle: {
+								color: "#FFFFFF",
+								fontSize: 16,
+								rich:{
+									lentitle:{
+										color:'#859BBC',
+										fontSize: 16
+									}
+								}
+							},
+							formatter: function(name) {
+								let p;
+								if(name=='磁组件'){
+									p='      '
+								}else{
+									p='   '
+								}
+								return '  '+name +p+'{lentitle|' +resObj[name].value+'家'+'}'
+							}
+						},
+						series: [{
+							name: 'Access From',
+							type: 'pie',
+							radius: ['55%', '80%'],
+							center: ['25%', '50%'],
+							avoidLabelOverlap: false,
+							hoverAnimation:false,
+							itemStyle: {
+								borderRadius: 10,
+								borderColor: '#031026',
+								borderWidth: 2
+							},
+							label: {
+								show: false,
+								position: 'center'
+							},
+							emphasis: {
+								label: {
+									show: false
+								}
+							},
+							labelLine: {
+								show: false
+							},
+							data: dataSeries1
+						}]
+					};
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					itemData = data;
+					fresh();
+				};
+
+				ue.interface.TransList1 = function(data) {
+					itemTitle = data;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

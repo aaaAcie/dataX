@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<head> 
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow: hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+
+				@font-face {
+					font-family: DIN;
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<script>
+				let BeginSize = [400, 237];
+				// let BeginSize = [359, 234];
+
+				let myChart = null;
+				let dataList = [120, 132, 101, 134, 90, 230, 210]; //鄞州区
+				let dataList1 = [220, 182, 191, 234, 290, 330, 310]; //海曙区
+				let titleData = ['6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+				let titleData1 = ['中国', '国外'];
+
+				function fresh() {
+					let option = {
+						// backgroundColor: "#031026",
+						title: {
+						    text: "单位：亿元",
+						    left: "3%",
+						    top: "4%",
+						    textStyle: {
+						      fontSize: 15,
+						      color: "#99c8ff",
+						      fontFamily: 'SourceHanSansCN'
+						    }
+						  },
+						tooltip: {
+							trigger: 'axis',
+							backgroundColor: "#031026",
+							borderColor: "#031026",
+
+							axisPointer: {
+								type: 'line',
+								lineStyle: {
+									type: "dashed"
+								},
+							},
+							formatter: function(params) {
+								var str =
+									`<h2 style=font-size:14px;>${params[0].name}</h2>
+								<span style=color:#B27AFF;font-size:14px>${params[0].seriesName}</span><span style=color:#B27AFF;font-size:14px;padding-left:20px;>${params[0] ? params[0].data : ''}亿元</span><br />
+								<span style=color:#00D8FF;font-size:14px>${params[1].seriesName}</span><span style=color:#00D8FF;font-size:14px;padding-left:20px;>${params[1] ? params[1].data : ''}亿元</span>`
+								return str
+
+							},
+						},
+						color: ["#B27AFF", "#8EF0FF"],
+						legend: {
+							top: '2%',
+							right: '2%',
+							icon: "circle",
+							itemHeight: 9,
+							itemWidth: 9,
+							textStyle: {
+								color: "#DFF8FF ",
+								fontSize: 15,
+							},
+							data: titleData1
+						},
+						grid: {
+							left: '3%',
+							right: '4%',
+							height: '75%',
+							width: '90%',
+							bottom: '5%',
+							containLabel: true
+						},
+						xAxis: {
+							type: 'category',
+							boundaryGap: false,
+							data: titleData,
+							axisLine: {
+								show: true,
+								lineStyle: {
+									color: "#B1B1B1",
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									color: "#DFF8FF",
+									fontSize: 17
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: false,
+							},
+						},
+						yAxis: {
+							type: 'value',
+							axisLine: {
+								lineStyle: {
+									color: "#B1B1B1",
+								},
+							},
+							axisLabel: {
+								textStyle: {
+									color: "#B1B1B1",
+									fontSize: 15
+								},
+							},
+							axisTick: {
+								show: false,
+							},
+							splitLine: {
+								show: true,
+								lineStyle: {
+									color: "#556468",
+									type:'dashed'
+								},
+							},
+						},
+						series: [{
+								name: '中国',
+								type: 'line',
+								symbol: 'none',
+								smooth: true,
+								stack: 'Total',
+								data: dataList,
+								itemStyle: {
+									normal: {
+										color: '#B27AFF',
+										lineStyle: {
+											color: "#B27AFF",
+											width: 1
+										},
+										areaStyle: {
+											color:new echarts.graphic.LinearGradient(0, 0,0, 1, [
+											  { offset: 0, color: 'rgba(146, 92, 221, 1)' },
+											  { offset: 1, color: 'rgba(146, 92, 221, 0)' }
+											]),
+										},
+									}
+								},
+							},
+							{
+								name: '国外',
+								type: 'line',
+								symbol: 'none',
+								smooth: true,
+								stack: 'Total',
+								data: dataList1,
+								itemStyle: {
+									normal: {
+										color: '#04CDF4',
+										lineStyle: {
+											color: "#04CDF4",
+											width: 1
+										},
+										areaStyle: {
+											color:new echarts.graphic.LinearGradient(0, 0,0, 1, [
+											  { offset: 0, color: 'rgba(142, 240, 255, 1)' },
+											  { offset: 1, color: 'rgba(142, 240, 255, 0)' }
+											]),
+										},
+									}
+								},
+							},
+						]
+					};
+					myChart.setOption(option);
+				}
+				bind();
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+				//fresh();
+				function bind() {
+					myChart = echarts.init(document.getElementById('main'));
+				}
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					return myOption.series[0].type
+				}
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					var obj = JSON.parse(data);
+					titleData = obj.data1;
+					titleData1 = obj.data2;
+					dataList = obj.data3;
+					dataList1 = obj.data4;
+					fresh();
+				};
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

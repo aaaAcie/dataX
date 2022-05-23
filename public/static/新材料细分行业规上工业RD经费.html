@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+					
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<script>
+				let BeginSize = [132, 132];
+
+				let myChart = null;
+				let myColor=['#E3A693','#01ECFF','#D5A4E2','#1D96FC','rgba(3, 16, 38, 0.71)'];
+				let titleData=['磁性','电子信息','高分子','金属','其他']
+				let tempData=[9.72,12.03,39.29,31.97,7.00]
+				let titleYear='2020'
+
+				function fresh() {
+					let itemData = [];
+					tempData.forEach((item,index)=>{
+						itemData.push({
+							name:titleData[index],
+							value:item
+						})
+					})
+					if (myChart==null) {
+					    myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+						backgroundColor: '#031026',
+						color:myColor,
+						title:{
+							text:`· ${titleYear} ·`,
+							textStyle: {
+							      fontSize: 15,
+							      color: "#DFF8FF"
+							},
+							bottom:10,
+							left:'center'
+						},
+						tooltip: {
+							trigger: 'item',
+							position: 'inside',
+							backgroundColor: "#031026",
+							formatter:function(params){
+								if(params.value==0){
+									return `<a style="display:inline-block;width:7px;height:7px;border-radius:7px;background:${myColor[params.dataIndex]};"></a> `+params.name+'<br>'+'<a style="margin-left:10px"><a/>'+params.value+'%'
+								}else{
+									return `<a style="display:inline-block;width:7px;height:7px;border-radius:7px;background:${myColor[params.dataIndex]};"></a> `+params.name+'<br>'+'<a style="margin-left:10px"><a/>'+params.value+'%'
+								}
+							} 
+						},
+						series: [{
+							type: "pie",
+							radius: ["35%", "60%"],
+							center: ["50%", "40%"],
+							hoverAnimation: false,
+							xAxisIndex:1,
+							yAxisIndex: 1, 
+							z: 10,
+							itemStyle: {
+								normal: {
+									borderWidth: 3,
+									borderColor: "rgba(3, 16, 38, 0.71)"
+								}
+							},
+							label: {
+								show: false,
+								position: 'inside'
+							},
+							data: itemData,
+							labelLine: {
+								show: false
+							}
+						}]
+					};
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					// console.log(myOption.series);
+					return myOption.series[0].type
+
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					var obj = JSON.parse(data);
+					//alert(obj.data1);
+					titleData = obj.data1;
+					tempData = obj.data2;
+					titleYear = obj.data3;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>

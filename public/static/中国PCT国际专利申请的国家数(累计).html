@@ -1,0 +1,245 @@
+<!-- <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head> -->
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>中国PCT国际专利申请的国家数(累计)</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts-5.3.2.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+				@font-face {
+					font-family: 'SourceHanSansCN';
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main" ></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				console.log(echarts.version) // 4.3.0  // 5.3.2
+				let BeginSize = [418.48, 275];
+				let myChart = null;
+				let myColor = ['rgba(46, 158, 255, 1)','rgba(45, 212, 255, 1)']
+				let itemTitle = ['仅WIPO','1个国家','2-3个国家','4个及以上国家']
+
+				let itemData = [90, 47, 21, 41]
+				
+				function fresh() {
+					let dataList1 = []
+					// 计算 itemData 各数字比例
+					let itemData2 = itemData.map(item => {
+						return ((item / itemData.reduce((previousV,currentV) => {
+							return previousV+currentV
+						}, 0)) * 100).toFixed(2)
+					})
+					itemTitle[3] = '≥4个国家'
+					itemData.forEach((item, index) => {
+						dataList1.push({
+							name: item,
+							value: itemData2[index]
+						})
+					})
+					if (myChart==null) {
+						myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+
+					let option = {
+						// backgroundColor: "rgba(3, 16, 38, 1)",
+
+						grid: {
+							left: -30,
+							// right: 184,
+							width:'68%',
+							// height:'68%',
+							bottom: 26,
+							containLabel: true
+						},
+						label: {
+							show: true,
+							position: [155, -5],
+							// formatter: (params) => {
+							// 	return params.name +'   '+ (params.value < 10 ? '0'+params.value+'%' : params.value+'%')
+							// },
+							formatter: [
+									'{a|{b}}',
+									'{b|{c}%}'
+							].join(''),
+							rich: {
+								a: {
+									color: 'rgba(255, 255, 255, 1)',
+									padding: [0,20,0,0],
+									width: 42,
+									align: 'center',
+									fontSize: 15,
+								},
+								b: {
+									color: 'rgba(4, 205, 244, 1)',
+									fontSize: 15,
+								}
+							},
+							fontSize: 15,
+							// color: 'rgba(4, 205, 244, 1)',
+							lineHeight: 26,
+							fontWeight: 400,
+							fontFamily: 'SourceHanSansCN'
+						},
+						xAxis: {
+							show: false,
+							max: 100
+						},
+						yAxis: {
+							type: 'category',
+							data: itemTitle,
+							inverse: true,
+							axisLabel: {
+								show: true,
+								color: 'rgba(224, 237, 249, 1)',
+								
+								// color: 'rgba(12, 57, 96, 0.37)',
+								fontSize: 15,
+								margin: 82, // 标签与轴线之间的距离
+								width: 70,
+								overflow: "break",
+								interval: 0, //解决x轴显示不全
+								fontFamily: 'SourceHanSansCN',
+								fontWeight: 400,
+								lineHeight: 19,
+								padding: [0,-50,0,0],
+								formatter:function(name){
+									if(name=="≥4个国家"){
+										return "{aa|"+name+"}"
+									}
+									return name
+								},
+								rich:{
+									aa:{
+										fontSize: 15,
+										fontWeight: 400,
+									}
+								}
+							},
+							splitLine: {
+								show: false
+							},
+							axisLine:{
+								show: false
+							},
+							axisTick: {
+								show: false
+							}
+						},
+						series: [
+							{	
+								name: '国家数',
+								data: dataList1,
+								type: 'bar',
+								showBackground: true,
+								backgroundStyle: {
+									color: 'rgba(12, 57, 96, 0.37)'
+								},
+								barWidth: 13,
+								barGap: "36%",
+								itemStyle: {
+									color: new echarts.graphic.LinearGradient(0, 0, 1, 1, [
+										{ offset: 0, color: 'rgba(0, 136, 255, 1)' },
+										{ offset: 1, color: 'rgba(38, 239, 225, 1)' }
+									])
+								}
+							}
+						]
+					}
+					myChart.setOption(option);
+
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					var obj = JSON.parse(data);
+					itemTitle = obj.data1;
+					
+					itemData = obj.data2;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<!-- <body>
+	</body>
+</html> -->

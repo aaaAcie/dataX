@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" class="no-ie" style="overflow:hidden;">
+  <head>
+    <meta charset="UTF-8">
+    <title>鄞州区</title>
+    <script>
+      "object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+        ue.interface.broadcast = function(e, t) {
+          if ("string" == typeof e) {
+            var o = [e, ""];
+            void 0 !== t && (o[1] = t);
+            var n = encodeURIComponent(JSON.stringify(o));
+            "object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+              "#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+              .hash = n, document.location.hash = encodeURIComponent("[]"))
+          }
+        }) : function(e) {
+        ue.interface = {}, ue.interface.broadcast = function(t, o) {
+          "string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+        }
+      }(ue.interface), (ue4 = ue.interface.broadcast);
+    </script>
+    <!-- <script src="./dist/echarts-5.3.2.min.js"></script> -->
+    <script src="./dist/echarts.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      /* @font-face {
+        font-family: DIN;
+        src: url(./static/font/DIN-Medium.otf);
+      } */
+      .pie {
+        z-index: 9999;
+        position: absolute;
+        zoom: 65%;
+        top: 78px;
+        left: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <img class="pie" src="./img/外圈虚线.png">
+    <div id="main"></div>
+    <!--
+  dataTemp1: y轴数值;dataTemp2: x轴标题
+  -->
+    <script>
+      // let BeginSize = [396, 320];
+      let BeginSize = [380, 268];
+
+      let myChart = null;
+      // 定义 data
+      let counts = {}
+      let data = {
+        isSet: null, // 为了做判断：当鼠标移动上去的时候，自动高亮就被取消
+        charPie3currentIndex: 0,
+        myColor: ['#9B6AE2','#D2DCF9','#30CDFF','#1D96FC', '#E5BC8D', '#D5A4E2','#42E5F8','#7EFFA5','#FFFB95','#6D99FF','#6087AA','#3BD87F'],
+        dataList1: [1,0.2,0.2,0.9,1,0.1,0.8,1.9,0.3,0.9,1,0.1,1,0.4,0.2,0.4,1,0.8,0.8,1.0,0.3,0.9,0.7,1.1,0.4],
+        dataTitle: ['下应街道', '钟公庙街道', '梅墟街道', '中河街道', '首南街道', '潘火街道', '百丈街道', '东胜街道', '明楼街道', '白鹤街道', '东柳街道', '东郊街道', '福明街道', '新明街道', '聚贤街道', '瞻岐镇', '咸祥镇', '塘溪镇', '东钱湖镇', '东吴镇', '五乡镇', '邱隘镇', '云龙镇', '横溪镇', '姜山镇'],
+        dataSeries: [],
+        resObj: {},
+        bfb: []
+      }
+      let total = eval(data.dataList1.join("+")).toFixed(1)
+      data.dataList1.forEach((item, index) => {
+        data.dataSeries.push({
+          value: item,
+          name: data.dataTitle[index],
+          bfb: (item/total*100).toFixed(2) + '%'
+        })
+      })
+      for (let i in data.dataSeries) {
+        data.resObj[data.dataSeries[i]["name"]] = data.dataSeries[i];
+      }
+      function fresh() {
+        if (myChart == null) {
+          myChart = echarts.init(document.getElementById('main')); //利用原型调取Echarts的初始化方法
+        }
+        let option = {
+          title: {
+              text: `{a|${total}}{b|万亩}\n{tlabel|  粮功总面积}`,
+              top:'53%',
+              left: '19%',
+              textAlign: 'center',
+              textVerticalAlign: 'center',
+              textStyle:{
+                fontSize: 14,
+                lineHeight: 30,
+                color: '#FFFFFF',
+                rich:{
+                  a: {
+                    fontSize: 22,
+                    // lineHeight: 72,
+                    fontWeight: 900,
+                    color: '#27C6FA',
+                    width: 52
+                  },
+                  b: {
+                    fontSize: 14,
+                    lineHeight: 24,
+                    fontWeight: 700,
+                  },
+                  tlabel:{
+                    fontSize: 12,
+                    lineHeight: 27,
+                    fontWeight: 700,
+                  }
+                },
+                fontWeight: 400
+              },
+              formatter: function(params){
+                // return params.name+'\n'+'{tlabel|'+(params.value/total*100).toFixed(0)+'%'+'}'
+                return total + '万亩' +'\n'+ '粮功总面积'
+              },
+              position: 'center',
+              show: true,
+              color: "#fff",
+                
+          },
+          // backgroundColor: '#15284a',
+          grid: {
+            left: '5%',
+            // right: '8%',
+            // bottom: '3%',
+            containLabel: true
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: "{b} : {c} ({d}%)"
+          },
+          legend: {
+            type : 'scroll',
+            pageIconSize:10,
+            pageButtonItemGap:10,
+            pageButtonGap:10,
+            pageFormatter: '{current}',
+            pageIcons: {
+              vertical: ['image://./img/icon0.png','image://./img/icon1.png']
+            },
+            pageTextStyle: {
+              color: '#fff',
+              fontSize: 12,
+              lineHeight: 20
+            },
+            icon: "rect",
+            selectedMode: true,
+            orient: 'vertical', // 布局方式，默认为水平布局，可选为：'horizontal' ¦ 'vertical'
+            x: '41%',
+            top: 'middle',
+            itemGap: 10,
+            itemWidth: 9,
+            itemHeight: 9,
+            textStyle: {
+              color: "#FFFFFF",
+            },
+            formatter: function(name) {
+              return '{name|'+name+'}' + ' ' + '{b|'+data.resObj[name].value+'万亩}' + '{a|'+data.resObj[name]['bfb']+'}' 
+            },
+            textStyle: {
+              rich: {
+                name: {
+                  padding: [0,0,2,4],
+                  color: '#FFFFFF',     
+                  fontSize: 14,
+                  width: 70
+                  // verticalAlign: 'bottom'
+                },
+                a:{
+                  padding: [0,10,2,0],
+                  color: '#FFF',
+                  fontSize: 14,
+                  
+                },
+                b:{
+                  padding: [0,0,2,0],
+                  color: '#FFF',
+                  fontSize: 14,
+                  width: 59
+                }
+              }
+            }
+          },
+          color: data.myColor,
+          series: {
+            // silent: true,
+            hoverOffset: 5,
+            itemGap: 20,
+            name: '访问来源',
+            type: 'pie',
+            // radius: ['23%', '34%'],
+            radius: ['34%', '46%'],
+            center: ['21%', '53%'],
+            data: data.dataSeries,
+            // legendHoverLink:false,
+            // avoidLabelOverlap: false,
+            label: {
+              show: false
+            },
+            labelLine: {
+              show: false
+            },
+            // emphasis: {
+            //   // scale: true,
+            //   // scaleSize: 10,
+            //   // focus: 'self',
+            //   label: {
+            //     // formatter: "{b}\n{d}%",
+            //     formatter: function(params){
+            //       return params.name+'\n'+'{tlabel|'+(params.value/total*100).toFixed(0)+'%'+'}'
+            //     },
+            //     show: true,
+            //     color: "#fff",
+            //     fontSize: 14,
+            //     lineHeight: 30,
+            //     rich:{
+            //       tlabel:{
+            //         fontSize: 14,
+            //         lineHeight: 24,
+            //         // fontFamily:'DIN'
+            //       }
+            //     },
+            //     fontWeight: 400
+            //   },
+            // },
+            itemStyle: {
+              // borderRadius: 3,
+              borderColor: '#15284a',
+              // borderColor: 'rgba(37, 58, 103, 0.16)',
+
+              borderWidth: 2
+            },
+          }
+        }
+        myChart.setOption(option);
+      }
+      fresh();
+
+
+      //浏览器测试用
+      change(BeginSize[0], BeginSize[1]);
+
+      function change(x, y) {
+        let div = document.getElementById("main");
+        //alert("I am an alert box!!");
+        div.style.width = x + "px";
+        div.style.height = y + "px";
+        var myOption = myChart.getOption();
+        myChart.resize();
+        return myOption.series[0].type
+
+      }
+
+
+      /************下面数据***********/
+      ue.interface.TransList = function(data) {
+        itemData = data;
+        fresh();
+      };
+      ue.interface.TransList1 = function(data) {
+        itemTitle = data;
+        fresh();
+      };
+    </script>
+  </body>
+</html>
+
+

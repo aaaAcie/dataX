@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<!DOCTYPE html>
+	<html lang="en" class="no-ie" style="overflow:hidden;">
+		<head>
+			<meta charset="UTF-8">
+			<title>近7天进场分析</title>
+			<script>
+				"object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {},
+					ue.interface.broadcast = function(e, t) {
+						if ("string" == typeof e) {
+							var o = [e, ""];
+							void 0 !== t && (o[1] = t);
+							var n = encodeURIComponent(JSON.stringify(o));
+							"object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "",
+								"#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location
+								.hash = n, document.location.hash = encodeURIComponent("[]"))
+						}
+					}) : function(e) {
+					ue.interface = {}, ue.interface.broadcast = function(t, o) {
+						"string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, ""))
+					}
+				}(ue.interface), (ue4 = ue.interface.broadcast);
+			</script>
+			<script src="./dist/echarts.min.js"></script>
+			<script src="./static/js/jquery.min.js"></script>
+			<script src="./static/js/FuncTest.js"></script>
+			<script src="./static/js/PortChart.js"></script>
+			<script>
+				$(function() {
+					ue4("getSize", {
+						mes: "get windows size"
+					});
+					ue4("getColor", {
+						mes: "get all color"
+					});
+					ue4("getData", {
+						mes: "get all data"
+					});
+					ue4("beginSize", {
+						mes: BeginSize[0],
+						mes2: BeginSize[1]
+					});
+					ue4("beginSizeY", {
+						mes: BeginSize
+					});
+				});
+				/*$(function () {
+				    
+				});*/
+			</script>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+				}
+				@font-face {
+					font-family:DIN;
+					src: url(./static/font/DIN-Medium.otf);
+				}
+			</style>
+		</head>
+		<body>
+			<div id="main"></div>
+			<!--
+		dataTemp1: y轴数值;dataTemp2: x轴标题
+		-->
+			<script>
+				let BeginSize = [418.48, 267.06];
+				let myChart = null;
+				let itemData=[200,240,280,300,390]
+				let itemData1=[8,12,6,3,1]
+				let itemTitle=['2017','2018','2019','2020','2021']
+				let dataList1 = []
+				function fresh() {
+					if (myChart==null) {
+					    myChart = echarts.init(document.getElementById('main'));  //利用原型调取Echarts的初始化方法
+					}
+					let option = {
+						backgroundColor: 'rgba(3, 16, 38, 0.71)',
+							// title:{
+							// 	text:'单位：件',
+							// 	textStyle:{
+							// 		fontSize:15,
+							// 		color:'rgba(255, 255, 255, 0.6)'
+							// 	},
+							// 	left:'4%',
+							// 	top:'0%'
+							// },
+							grid: {
+							        left: '4%',
+							        width:'91%',
+									height:'83%',
+							        bottom: '3%',
+							        containLabel: true
+							},
+							legend: {
+								icon: "rect",
+								itemWidth: 12,
+								itemHeight: 12,
+								itemGap: 10,
+								// align: "auto",
+								right: 40,
+								top:'2',
+								textStyle: {
+								      color: "#DFF8FF",
+											padding: [2,0,0,0],
+								      fontSize: 15,
+									  // lineHeight: 15
+								    }
+							},
+							tooltip: {
+								trigger: 'axis',
+								backgroundColor: "#031026",
+								borderColor: "#031026",
+								axisPointer: {
+								    type: 'none',
+								},
+								formatter: function(params){
+									var str = `${params[0].name}<br /><span style=font-size:13px>国内发明专利</span> <span style=color:#00D8FF;font-size:12;>${params[0] ? params[0].data : ''}</span>
+									<br /><span style=font-size:13px>PCT发明专利</span> <span style=color:#00D8FF;font-size:12;>${params[1]? params[1].data : ''}</span>`
+									return str
+									
+								},
+								textStyle: {
+								      color: "#FFFFFF",
+									  fontSize:14
+								},
+							},
+							xAxis: [{
+								type: 'category',
+								show: false,
+								axisLabel: {
+									show:true,
+									color: '#DFF8FF',
+									fontSize: 17,
+									interval: 0 //解决x轴显示不全
+									
+								},
+								splitLine: {
+									show: false
+								},
+								axisLine: {
+									show: true,
+									lineStyle:{
+										type:'solid',
+										color:'#B1B1B1',
+										width:1
+									}
+								},
+								axisTick :{
+									show:false
+								},
+								show:true,
+								data:itemTitle
+							}],
+							yAxis: [{
+								id: 0,
+								splitLine: {
+									show: false,
+									lineStyle:{
+										type:'dotted',
+										color:'#556468',
+										width:1
+									}
+								},
+								axisLine: { //y轴
+									show: true,
+									lineStyle:{
+											type:'solid',
+											color:'#8baaff',
+											width:1
+										}
+								},
+								axisTick: {
+									show: false
+								},
+								axisLabel: {
+									color: 'rgba(255, 255, 255, 0.6)',
+									fontSize: 15,
+								},
+								type: 'value',
+								axisTick: {
+									show: false
+								},
+							},{
+								id: 1,
+								splitLine: {
+									show: true,
+									lineStyle:{
+										type:'dotted',
+										color:'#556468',
+										width:1
+									}
+								},
+								axisLine: { //y轴
+									show: true,
+									lineStyle:{
+											type:'solid',
+											color:'#e1a938',
+											width:1
+									}
+								},
+								axisTick: {
+									show: false
+								},
+								axisLabel: {
+									color: 'rgba(255, 255, 255, 0.6)',
+									fontSize: 15,
+								},
+								type: 'value',
+								axisTick: {
+									show: false
+								},
+								splitNumber: 4
+							}],
+							series: [{
+								name: '国内发明专利（件）',
+								type: 'line',
+								label: {
+									show: false
+								}, 
+								yAxisIndex: 0,
+								data: itemData,
+								symbol:'none',
+								// symbolSize:5,
+								areaStyle: {
+									color:new echarts.graphic.LinearGradient(0, 0,0, 1, [
+									  { offset: 0, color: 'rgba(139, 170, 255, 1)' },
+									  { offset: 1, color: 'rgba(139, 170, 255, 0) ' }
+									]),
+								},
+								itemStyle: {
+									color:'#8BAAFF',
+								    borderType:'solid',
+									borderWidth:1,
+									borderColor:'#8BAAFF',
+								},
+							},{
+								name: 'PCT发明专利（件）',
+								yAxisIndex: 1,
+								type: 'line',
+								label: {
+									show: false
+								}, 
+								data: itemData1,
+								areaStyle: {
+									color:new echarts.graphic.LinearGradient(0, 0,0, 1, [
+									  { offset: 0, color: 'rgba(225, 169, 56, 1)' },
+									  { offset: 1, color: 'rgba(225, 169, 56, 0) ' }
+									]),
+								},
+								symbol:'none',
+								itemStyle: {
+									color:'#E1A938',
+								    borderType:'solid',
+									borderWidth:1,
+									borderColor:'#E1A938',
+								},
+							}]
+							
+						};;
+					myChart.setOption(option);
+				}
+				fresh();
+
+
+				//浏览器测试用
+				change(BeginSize[0], BeginSize[1]);
+
+				function change(x, y) {
+					let div = document.getElementById("main");
+					//alert("I am an alert box!!");
+					div.style.width = x + "px";
+					div.style.height = y + "px";
+					var myOption = myChart.getOption();
+					myChart.resize();
+					let types = []
+					myOption.series.forEach((item) => {
+						types.push(item.type)
+					})
+					return types
+				}
+
+
+				/************下面数据***********/
+				ue.interface.TransList = function(data) {
+					itemData = data;
+					fresh();
+				};
+				ue.interface.TransList = function(data) {
+					itemData1 = data;
+					fresh();
+				};
+				ue.interface.TransList1 = function(data) {
+					itemTitle = data;
+					fresh();
+				};
+
+			</script>
+		</body>
+	</html>
+
+	<body>
+	</body>
+</html>
