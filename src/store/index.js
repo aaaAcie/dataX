@@ -2,14 +2,19 @@ import { createStore } from 'vuex'
 
 // 创建一个新的 store 实例
 const store = createStore({
-  state () {
-    return {
-      count: 0
-    }
+  state: {
+    pathname: '',
+    content: ''
+
   },
   mutations: {
-    increment (state) {
-      state.count++
+    setPathname (state, payload) {
+      // console.log(payload,'=============')
+      state.pathname = payload
+    },
+    setContent (state, payload) {
+      // console.log(payload,' content ')
+      state.content = payload
     }
   }
 

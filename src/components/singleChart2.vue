@@ -11,7 +11,9 @@
 <script setup>
   import { onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useStore } from 'vuex'
   const router = useRouter()
+  const store = useStore()
   const { src,index } = defineProps({
     src: {
       type: String,
@@ -62,17 +64,21 @@
   }
   const goEdit = () => {
     console.log('--------')
+    store.commit('setPathname', src)
+    store.commit('setContent', content.text)
     router.push({
       name: 'edit',
       params: {
         pageId: page
       },
       // 给子路由查询
-      query: {
-        pathname: src,
-        content: content.text
-      }
+      // query: {
+      //   pathname: src,
+      //   content: content.text
+      // }
     })
+
+
   }
 </script>
 

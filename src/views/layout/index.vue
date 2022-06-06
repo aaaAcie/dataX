@@ -41,12 +41,23 @@ onActivated(() => {
 <style lang="less">
 .common-layout {
   height: 100%;
+  ::-webkit-scrollbar{
+    width: 4px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb
+  {
+    background-color: rgba(46, 151, 255, 1);
+    height: 4px;
+  }
+  
 }
 .el-header {
   background-color: #282737;
 }
 .el-container {
   height: 100%;
+
   .el-aside {
     background-color: #1E1D2A;
   }
@@ -55,4 +66,8 @@ onActivated(() => {
     padding-left: 40px;
   }
 }
+::-webkit-scrollbar{
+  display: none;
+}
+
 </style>

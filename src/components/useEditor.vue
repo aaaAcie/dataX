@@ -21,23 +21,30 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,computed } from 'vue';
 // import edit from './edit.vue'
 import MyEditor from './MyEditor.vue'
-import MyConsole from './MyConsole.vue'
+// import MyConsole from './MyConsole.vue'
 import {codeTpl0, codeTpl} from '@/utils/codeTemplate'
 import { useRoute,useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
 
 let iframe = ref('')
 let editor = ref('')
-let myconsole = ref('')
-let pathname = ref(route.query.pathname)
-let code = ref(route.query.content)
-let my_html_0 = ref(codeTpl0(route.query.content)) // 导出用的模板
+// let myconsole = ref('')
 
-console.log(pathname.value)
+let pathname = computed(() => store.state.pathname)
+let code = computed(() => store.state.content)
+let my_html_0 = computed(() => codeTpl0(store.state.content))
+
+// let pathname = ref(route.query.pathname)
+// let code = ref(route.query.content)
+// let my_html_0 = ref(codeTpl0(route.query.content)) // 导出用的模板
+
+console.log(pathname)
 const runCode = () => {
   let codes = editor.value.submitCode()
   const iframeDoc = iframe.value.contentDocument
