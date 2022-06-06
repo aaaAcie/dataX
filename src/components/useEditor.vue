@@ -88,6 +88,7 @@ const goBack = () => {
   box-sizing: border-box;
   background-color: #031026;
   color: #99c8ff;
+  border: 1px solid #3a9bcb;
 }
 .big-container {
   box-sizing: border-box;
