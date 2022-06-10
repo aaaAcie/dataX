@@ -1,6 +1,7 @@
-// 用于展示
+// 用于展示run
 export const codeTpl  = (code) => {
   const theCode = code.replace('parent.document', 'window.disableParent');
+  let option = ''
   const template = `
   <!DOCTYPE html>
   <html lang="en" class="no-ie" style="overflow:hidden;">
@@ -34,6 +35,26 @@ export const codeTpl  = (code) => {
           
           try {
                                     ${theCode}
+                                    // console.log('----window.parent--- ', window.parent)  
+
+                                    let oooo = JSON.parse(JSON.stringify(myChart.getOption()));
+                                    window.parent.postMessage({
+                                      option: oooo
+                                    },'*')
+
+                                    window.addEventListener('message',function(e){
+                                      let newOption = event.data.newOption
+                                      console.log('收到父消息：', newOption)
+                                      // Object.keys(newOption).forEach((key) => {
+                                      //   newOption[key] = JSON.parse(newOption[key])
+                                      // })
+                                      console.log('处理后：', newOption)
+                                      if(event.data.status=='200'){
+                                          console.log(newOption)
+                                          myChart.setOption(newOption)
+                                      }
+                                  })
+
           } catch(e) {
             console.error(e.name, e.message)
           }
@@ -41,6 +62,7 @@ export const codeTpl  = (code) => {
     </body>
   </html>
   `;
+  console.log('---option----- ', option)
   return template;
 }
 

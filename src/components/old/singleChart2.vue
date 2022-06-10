@@ -32,6 +32,8 @@
   onMounted(() => {
     // console.log('====   ',condition)
     const ifrW = iframe.value.contentWindow
+    // console.log('=ifrW==   ',ifrW)
+
     ifrW.onload = function(){
       let types = ifrW.change(370, 193)
       emit('getTypes', [index,types])

@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-  import SingleChart2 from '@/components/SingleChart2.vue'
+  import SingleChart2 from './components/SingleChart2.vue'
   import { ref,reactive,watchEffect } from 'vue'
   const props = defineProps({
     condition: {
@@ -43,7 +43,7 @@
     myTypes[index] = types
     changeShow(props.condition)
     // console.log(isShow.value)
-    console.log(now.value/all)
+    // console.log(now.value/all)
 
     if(now.value==all){
       isOver.value = true

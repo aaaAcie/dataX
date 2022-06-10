@@ -129,18 +129,18 @@ defineExpose({ submitCode })
   // height: 50%;
   flex: 1;
 }
-.select{
-  // padding: 10px 0;
-  height: 50px;
-  box-sizing: border-box;
-}
+// .select{
+//   // padding: 10px 0;
+//   height: 50px;
+//   box-sizing: border-box;
+// }
 .submit{
   text-align: center;
   padding: 10px 0;
 }
 .e-box{
   width: 100%;
-  padding-top: 40px ;
+  // padding-top: 40px ;
   box-sizing: border-box;
   height: 100%;
   display: flex;

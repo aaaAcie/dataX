@@ -23,7 +23,7 @@
   import AppHeader from './components/AppHeader.vue'
   import AppAside from './components/AppAside.vue'
 
-  import showCharts from '@/components/showCharts.vue'
+  import showCharts from '@/views/charts/showCharts.vue'
   import { ref,onActivated } from 'vue'
   let condition = ref('all')
 
