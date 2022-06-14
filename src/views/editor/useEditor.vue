@@ -8,7 +8,8 @@
   </iframe>
   <div class="big-container">
     <div class="buttons">
-      <button @click="runCode2">RUN2</button>
+      <button @click="saveAs2">可视化导出</button>
+      <button @click="runCode2">可视化RUN</button>
       <button @click="runCode">RUN</button>
       <button @click="saveAs">导出</button>
       <!-- <button class="clear" @click="clearConsole">Clear</button> -->
@@ -16,8 +17,9 @@
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleChoose">
       <el-tab-pane label="可视化编辑" name="visual_code">
         <div class="visual" >
-          <div class="visual_item" v-for="key in Object.keys(option)" v-show="show_option.includes(key) ">
-            <JudgeDisplay :crt_key="key" :crt_option="option[key]"> </JudgeDisplay>
+          <!-- <div class="visual_item" v-for="key in Object.keys(option)" v-show="show_option.includes(key) "> -->
+          <div class="visual_item" v-for="key in Object.keys(option)">
+            <judge-display :crt_key="key" :crt_option="option[key]"> </judge-display>
           </div>
         </div>
       </el-tab-pane>
@@ -37,13 +39,13 @@ import { ref,computed, onMounted } from 'vue';
 // import edit from './edit.vue'
 import MyEditor from './components/MyEditor.vue'
 import JudgeDisplay from './components/JudgeDisplay.vue'
-import {codeTpl0, codeTpl} from '@/utils/codeTemplate'
+import {codeTpl0, codeTpl, codeTpl_visual} from '@/utils/codeTemplate'
 import { useRoute,useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 // const route = useRoute()
 const router = useRouter()
 const store = useStore()
-
+let bs = ref([])
 let iframe = ref('')
 let editor = ref('')
 let option = ref({})
@@ -51,7 +53,7 @@ const show_option = ['backgroundColor','grid', 'label','xAxis', 'yAxis', 'series
 let pathname = computed(() => store.state.pathname)
 let code = computed(() => store.state.content)
 let my_html_0 = computed(() => codeTpl0(store.state.content)) // 导出用的模板
-
+let my_html_visual = ref('')
 let activeName = ref('visual_code')
 const handleChoose = (tab, event) => {
   console.log(tab, event)
@@ -61,23 +63,25 @@ onMounted(() => {
     if(e.data.option){
       store.commit('setOption', e.data.option)
       console.log('收到子消息为： ', e.data.option)
+      console.log('收到子消息BeginSize为： ', e.data.beginSize)
+      bs.value = e.data.beginSize
       // option.value = e.data.option
       let all = e.data.option
       // console.log(all)
       Object.keys(all).forEach((key) => {
-        console.log(key,all[key]);
-        if(all[key] && all[key].length != 0){
+        // console.log(key,all[key]);
+        if(all[key] && all[key].length != 0 && show_option.includes(key)){
           if(Array.isArray(all[key]) && all[key].length==1){
             all[key] = all[key][0]
-            console.log('----- ',key,all[key])
+            // console.log('----- ',key,all[key])
           }
           // option.value[key] = JSON.stringify(all[key])
           option.value[key] = all[key]
 
-          console.log('key: ',key,typeof all[key],all[key])
+          // console.log('key: ',key,typeof all[key],all[key])
         }
       })
-      console.log(option.value == e.data.option)
+      console.log('需要的option为：', option.value)
 
     }
   })
@@ -90,7 +94,9 @@ const runCode2 = () => {
     newOption: JSON.parse(JSON.stringify(option.value)),
     status: '200'
   },'*');
-
+  // 生成导出模板
+  my_html_visual.value = codeTpl_visual(bs.value, option.value)
+  console.log(codeTpl_visual(bs.value, option.value))
 }
 const runCode = () => {
   let codes = editor.value.submitCode()
@@ -113,9 +119,15 @@ const saveAs = () => {
   anchor.click()
   window.URL.revokeObjectURL(anchor.href)
 }
-// const clearConsole = () => {
-//   myconsole.value.clear()
-// }
+const saveAs2 = () => {
+  let downloadUrl = window.URL.createObjectURL(new Blob([my_html_visual.value], {type: "application/html"}))
+  let anchor = document.createElement("a")
+  anchor.href = downloadUrl
+  anchor.download =  pathname.value.split('/')[1]
+  console.log(pathname.value.split('/')[1])
+  anchor.click()
+  window.URL.revokeObjectURL(anchor.href)
+}
 const goBack = () => {
   // router.go(-1)
   router.push({
@@ -180,14 +192,15 @@ const goBack = () => {
     right: 0;
     box-sizing: border-box;
     // padding: 0 10px;
-    width: 20%;
+    // width: 20%;
     display: flex;
     button {
       cursor: pointer;
       margin-left: 10px;
       border: none;
       height: 32px;
-      width: 100%;
+      padding: 0 10px;
+      // width: 100%;
       // border: 2px solid rgb(248, 135, 154);
       background: #3a9bcb;
       color: #cbe2ea;
@@ -220,8 +233,8 @@ iframe {
 
 :deep(.demo-tabs){
   .is-top {
-
     color: #c2e2e8;
+    // color: #fff;
   }
   .el-tab-pane {
     // height: 1000px;
@@ -237,7 +250,7 @@ iframe {
   display: flex;
   flex-direction: column;
   z-index: 99999999;
-  overflow-y: auto;
+  overflow: auto;
   padding-left: 30px;
   ::-webkit-scrollbar{
     width: 14px;
@@ -249,21 +262,15 @@ iframe {
     height: 4px;
   }
   .visual_item {
-    color: #c9d4d4;
     line-height: 30px;
     margin: 10px 0px;
+    padding-left: 8px;
     display: flex;
     align-items: center;
-    width: 88%;
+    width: 95%;
+    border: 1px solid #99c8ff;
   }
-  
-  .visual_label {
-    color: #c9d4d4;
-    display: inline-block;
-    // padding-right:20px;
-    width: 200px;
-    font-size: 18px;
-  }
+
 }
 } 
 
