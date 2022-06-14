@@ -12,21 +12,14 @@
         <is-array :data="data[i]" :crt_key="i"></is-array>
       </div>
       <div v-else-if="typeof data[i] === 'object' && data[i]!=null && Object.keys(data[i]).length!==0" class="small_object">
-        <div class="visual_label">{{i}}00</div>
+        <div class="visual_label">{{i}}</div>
         <is-object :data="data[i]" style="background-color: #73c0de;"></is-object>
       </div>
-      <div v-else style="width: 145px;" v-show="typeof data[i] != 'object' || (data[i]!=null && Object.keys(data[i]).length!==0)">
+      <div v-else-if="data[i]!=null" style="width: 145px;" v-show="typeof data[i] != 'object' || (data[i]!=null && Object.keys(data[i]).length!==0)">
         <span class="visual_label">{{i}}:</span>
-        <el-input
-          v-model="data[i]"
-          placeholder="Please input"
-          :autosize="{ minRows: 1, maxRows: 8 }"
-          type="textarea"
-          class="visual_input"
-        />
+        <deal-input :data="data[i]"></deal-input>
       </div>
     </div>
-    <!-- <div v-else>=={{data}}</div> -->
   </div>
 </template>
 <script>
@@ -36,8 +29,10 @@
 </script>
 <script setup>
 // import { computed } from '@vue/reactivity';
+
 import { onMounted,computed } from 'vue'
 import IsArray from './IsArray.vue'
+import DealInput from './DealInput.vue'
 const { data } = defineProps({
   data: {
     type: [String, Object],

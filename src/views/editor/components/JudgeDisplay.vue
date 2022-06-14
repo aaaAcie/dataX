@@ -9,29 +9,15 @@
     <div v-else-if="typeof crt_option === 'object'">
       <is-object :data="crt_option"></is-object>
     </div>
-    <!-- string color-->
-    <el-input
-      v-else-if="crt_key=='color'"
-      v-model="crt_option"
-      placeholder="Please input"
-      class="visual_input"
-      type="color"
-    />
-    <!-- string -->
-    <el-input
-      v-else
-      v-model="crt_option"
-      placeholder="Please input"
-      class="visual_input"
-    />
+    <deal-input v-else :data="crt_option"></deal-input>
   </div>
   
 </template>
 
 <script setup>
-  import {  } from 'vue'
   import IsObject from './IsObject.vue'
   import IsArray from './IsArray.vue'
+  import DealInput from './DealInput.vue'
 
   const {crt_key, crt_option}= defineProps({
     crt_option: {

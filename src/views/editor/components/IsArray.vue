@@ -4,19 +4,8 @@
     <div v-if="typeof data[index] === 'object'" class="small_object">
       <is-object :data="data[index]"></is-object>
     </div>
-    <div v-else>
-      <el-input
-        v-if="crt_key=='color'"
-        type="color"
-        v-model="data[index]"
-        class="visual_input"
-        style="width: 60px; margin: 3px;"
-      />
-      <el-input
-        v-else
-        v-model="data[index]"
-        class="visual_input"
-      />
+    <div v-else-if="data[index]!=null">
+      <deal-input :data="data[index]"></deal-input>
     </div>
   </div>
 </div>
@@ -25,6 +14,7 @@
 <script setup>
   import {  } from 'vue'
   import IsObject from './IsObject.vue'
+  import DealInput from './DealInput.vue'
   const { data,crt_key }= defineProps({
     data: {
       type: [String, Object],
